@@ -8,6 +8,11 @@ api_platform:
         jsonopenapi: ['application/vnd.openapi+json']
         html: ['text/html']
     defaults:
+        pagination_maximum_items_per_page: 100
+        pagination_client_items_per_page: true
+        serializer:
+            context:
+                default_max_depth: 100
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']

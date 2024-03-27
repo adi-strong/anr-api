@@ -42,6 +42,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups([
       'user:read',
+      'exp:read',
+      'agent:read',
+      'mission:read',
     ])]
     private ?int $id = null;
 
@@ -57,6 +60,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     #[Groups([
       'user:read',
+      'agent:read',
+      'mission:read',
     ])]
     private ?string $username = null;
 
@@ -95,8 +100,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
       minMessage: 'Ce champ doit faire au moins {{ limit }} caractères.',
       maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.'
     )]
+
     #[Groups([
       'user:read',
+      'exp:read',
+      'agent:read',
+      'mission:read',
     ])]
     private ?string $fullName = null;
 
@@ -124,9 +133,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'author')]
     private Collection $users;
 
+    #[ORM\OneToMany(targetEntity: Expense::class, mappedBy: 'user')]
+    private Collection $expenses;
+
+    #[ORM\OneToMany(targetEntity: Agent::class, mappedBy: 'user')]
+    private Collection $agents;
+
+    #[ORM\OneToMany(targetEntity: Mission::class, mappedBy: 'user')]
+    private Collection $missions;
+
+    #[ORM\OneToMany(targetEntity: MedicalFile::class, mappedBy: 'user')]
+    private Collection $medicalFiles;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->expenses = new ArrayCollection();
+        $this->agents = new ArrayCollection();
+        $this->missions = new ArrayCollection();
+        $this->medicalFiles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -288,6 +313,126 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($user->getAuthor() === $this) {
                 $user->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Expense>
+     */
+    public function getExpenses(): Collection
+    {
+        return $this->expenses;
+    }
+
+    public function addExpense(Expense $expense): static
+    {
+        if (!$this->expenses->contains($expense)) {
+            $this->expenses->add($expense);
+            $expense->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExpense(Expense $expense): static
+    {
+        if ($this->expenses->removeElement($expense)) {
+            // set the owning side to null (unless already changed)
+            if ($expense->getUser() === $this) {
+                $expense->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Agent>
+     */
+    public function getAgents(): Collection
+    {
+        return $this->agents;
+    }
+
+    public function addAgent(Agent $agent): static
+    {
+        if (!$this->agents->contains($agent)) {
+            $this->agents->add($agent);
+            $agent->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAgent(Agent $agent): static
+    {
+        if ($this->agents->removeElement($agent)) {
+            // set the owning side to null (unless already changed)
+            if ($agent->getUser() === $this) {
+                $agent->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Mission>
+     */
+    public function getMissions(): Collection
+    {
+        return $this->missions;
+    }
+
+    public function addMission(Mission $mission): static
+    {
+        if (!$this->missions->contains($mission)) {
+            $this->missions->add($mission);
+            $mission->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMission(Mission $mission): static
+    {
+        if ($this->missions->removeElement($mission)) {
+            // set the owning side to null (unless already changed)
+            if ($mission->getUser() === $this) {
+                $mission->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MedicalFile>
+     */
+    public function getMedicalFiles(): Collection
+    {
+        return $this->medicalFiles;
+    }
+
+    public function addMedicalFile(MedicalFile $medicalFile): static
+    {
+        if (!$this->medicalFiles->contains($medicalFile)) {
+            $this->medicalFiles->add($medicalFile);
+            $medicalFile->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedicalFile(MedicalFile $medicalFile): static
+    {
+        if ($this->medicalFiles->removeElement($medicalFile)) {
+            // set the owning side to null (unless already changed)
+            if ($medicalFile->getUser() === $this) {
+                $medicalFile->setUser(null);
             }
         }
 

@@ -8,10 +8,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 trait CreatedAtTrait
 {
-
   #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
   #[Groups([
     'user:read',
+    'mission:read',
+    'med:read',
+    'agent:read',
+    'assignment:read',
+    'property:read',
   ])]
   private ?\DateTimeInterface $createdAt = null;
 
