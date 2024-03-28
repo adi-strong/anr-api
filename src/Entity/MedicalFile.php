@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Actions\MedicalActions\AddNewMedicalFileAction;
@@ -18,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
   operations: [
     new Get(),
+    new Delete(),
     new Post(
       inputFormats: ['multipart' => ['multipart/form-data']],
       controller: AddNewMedicalFileAction::class

@@ -4,9 +4,12 @@ namespace App\Controller\Actions\SocietyRecoveryActions;
 
 use App\Entity\DocObject;
 use App\Entity\SocietyRecovery;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 
-class AddNewSocietyRecoveryAction
+#[AsController]
+final class AddNewSocietyRecoveryAction extends AbstractController
 {
   public function __invoke(SocietyRecovery $societyRecovery, Request $request): SocietyRecovery
   {

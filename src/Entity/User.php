@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\UserRepository;
 use App\Traits\CreatedAtTrait;
+use App\Traits\IsDeletedTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -35,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity('email', message: 'Cette adresse Email est déjà prise.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-  use CreatedAtTrait;
+  use CreatedAtTrait, IsDeletedTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -100,7 +101,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
       minMessage: 'Ce champ doit faire au moins {{ limit }} caractères.',
       maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.'
     )]
-
     #[Groups([
       'user:read',
       'exp:read',

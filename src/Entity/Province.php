@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\ProvinceRepository;
+use App\Traits\IsDeletedTrait;
 use App\Traits\SlugTrait;
 use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,7 +24,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     new GetCollection(),
     new Get(),
     new Patch(),
-    new Delete(),
     new Post(),
   ],
   normalizationContext: ['groups' => ['province:read']],
@@ -35,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class Province
 {
-  use SlugTrait;
+  use SlugTrait, IsDeletedTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

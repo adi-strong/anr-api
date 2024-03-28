@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\Actions\PropertyActions\AddNewPropertyAction;
 use App\Repository\PropertyRepository;
 use App\Traits\CreatedAtTrait;
+use App\Traits\IsDeletedTrait;
 use App\Traits\UpdatedAtTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class Property
 {
-  use CreatedAtTrait, UpdatedAtTrait;
+  use CreatedAtTrait, UpdatedAtTrait, IsDeletedTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

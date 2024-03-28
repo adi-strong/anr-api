@@ -10,6 +10,7 @@ trait ReleasedAtTrait
 {
   #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
   #[Groups([
+    'agent:read',
   ])]
   private ?\DateTimeInterface $releasedAt = null;
 
