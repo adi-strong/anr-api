@@ -87,9 +87,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
       minMessage: 'Ce champ doit faire au moins {{ limit }} caractères.',
       maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.'
     )]
-    #[Groups([
-      'user:read',
-    ])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
@@ -142,16 +139,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Mission::class, mappedBy: 'user')]
     private Collection $missions;
 
-    #[ORM\OneToMany(targetEntity: MedicalFile::class, mappedBy: 'user')]
-    private Collection $medicalFiles;
-
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->expenses = new ArrayCollection();
         $this->agents = new ArrayCollection();
         $this->missions = new ArrayCollection();
-        $this->medicalFiles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -403,36 +396,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($mission->getUser() === $this) {
                 $mission->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, MedicalFile>
-     */
-    public function getMedicalFiles(): Collection
-    {
-        return $this->medicalFiles;
-    }
-
-    public function addMedicalFile(MedicalFile $medicalFile): static
-    {
-        if (!$this->medicalFiles->contains($medicalFile)) {
-            $this->medicalFiles->add($medicalFile);
-            $medicalFile->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMedicalFile(MedicalFile $medicalFile): static
-    {
-        if ($this->medicalFiles->removeElement($medicalFile)) {
-            // set the owning side to null (unless already changed)
-            if ($medicalFile->getUser() === $this) {
-                $medicalFile->setUser(null);
             }
         }
 

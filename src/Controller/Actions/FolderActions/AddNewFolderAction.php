@@ -15,7 +15,7 @@ final class AddNewFolderAction extends AbstractController
   public function __invoke(Folder $folder, Request $request): Folder
   {
     $uploadedFile = $request->files->get('file');
-    if (!$uploadedFile) throw new BadRequestHttpException('file: Le fichier est requis.');
+    if (!$uploadedFile) throw new BadRequestHttpException('file:Le fichier est requis.');
 
     $docObject = new DocObject();
     $docObject->file = $uploadedFile;

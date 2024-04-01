@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Controller\Actions\FuelActions\CreateFuelSupplyAction;
 use App\Repository\FuelSupplyRepository;
 use App\Traits\CreatedAtTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
   operations: [
     new GetCollection(),
     new Get(),
-    new Post(),
+    new Post(controller: CreateFuelSupplyAction::class),
   ],
   normalizationContext: ['groups' => ['f_supply:read']],
   order: ['id' => 'desc'],
@@ -29,6 +30,10 @@ class FuelSupply
 {
   use CreatedAtTrait;
 
+  #[Assert\NotBlank(message: 'Aucun carburant n\'a été renseigné.')]
+  #[Assert\NotNull(message: 'Aucun carburant n\'a été renseigné.')]
+  public ?array $items = [];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -37,7 +42,7 @@ class FuelSupply
     ])]
     private ?int $id = null;
 
-    #[ORM\OneToMany(targetEntity: FuelStockSupply::class, mappedBy: 'supply')]
+    #[ORM\OneToMany(targetEntity: FuelStockSupply::class, mappedBy: 'supply', cascade: ['persist', 'remove'])]
     private Collection $fuelStockSupplies;
 
     public function __construct()

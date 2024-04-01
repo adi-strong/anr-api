@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -33,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
   order: ['id' => 'desc'],
   forceEager: false
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
 class Society
 {
   use IsDeletedTrait;
@@ -100,10 +103,34 @@ class Society
     private ?SocietyType $type = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\NotBlank(message: 'Le Type doit être renseigné.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[Groups([
+      'society:read',
+      'province:read',
+    ])]
     private ?string $address = null;
 
     #[ORM\OneToMany(targetEntity: SocietyRecovery::class, mappedBy: 'society')]
     private Collection $societyRecoveries;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups([
+      'society:read',
+      'province:read',
+    ])]
+    private ?string $focal = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Ce champ est requis.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[Assert\Length(max: 255, maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.')]
+    #[Assert\Regex('#^\+?\d(?:[\s.-]?\d{2,3}){3,}$#', message: 'N° de Téléphone invalide.')]
+    #[Groups([
+      'society:read',
+      'province:read',
+    ])]
+    private ?string $phone = null;
 
     public function __construct()
     {
@@ -213,6 +240,30 @@ class Society
                 $societyRecovery->setSociety(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFocal(): ?string
+    {
+        return $this->focal;
+    }
+
+    public function setFocal(?string $focal): static
+    {
+        $this->focal = $focal;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): static
+    {
+        $this->phone = $phone;
 
         return $this;
     }

@@ -45,4 +45,22 @@ class AgentRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+  /**
+   * @param mixed $keyword
+   * @return Agent[]
+   */
+  public function findAgents(mixed $keyword): array
+  {
+    $qb = $this->createQueryBuilder('a');
+    $qb->where(
+      $qb->expr()->orX(
+        $qb->expr()->like('a.name', ':keyword'),
+        $qb->expr()->like('a.lastName', ':keyword'),
+        $qb->expr()->like('a.firstName', ':keyword'),
+      )
+    )->setParameter('keyword', '%'.$keyword.'%');
+
+    return $qb->getQuery()->getResult();
+  }
 }

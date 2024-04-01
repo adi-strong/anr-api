@@ -61,6 +61,9 @@ class ImageObject
   #[Groups([
     'image_object:read',
     'property:read',
+    'agent:read',
+    'assignment:read',
+    'salary:read',
   ])]
   public ?string $contentUrl = null;
 

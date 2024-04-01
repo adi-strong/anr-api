@@ -2,8 +2,12 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Agent;
 use App\Entity\Currency;
 use App\Entity\Department;
+use App\Entity\DepartmentService;
+use App\Entity\Grade;
+use App\Entity\Job;
 use App\Entity\Province;
 use App\Entity\User;
 use Cocur\Slugify\Slugify;
@@ -35,30 +39,6 @@ class AppFixtures extends Fixture
     $manager->persist($root);
     // End Root Admin
 
-
-    // Province
-    /*$provinceItems = ['Kinshasa', 'Kongo-central', 'Haut Katanga'];
-    foreach ($provinceItems as $item) {
-      $province = (new Province())->setName($item);
-      $province->setSlug((new Slugify())->slugify($province->getName()));
-      $manager->persist($province);
-    }*/
-    for ($p = 0; $p < 10; $p++) {
-      $province = (new Province())->setName($faker->country);
-      $province->setSlug((new Slugify())->slugify($province->getName()));
-      $manager->persist($province);
-    }
-    // End Province
-
-    // Departments
-    for ($d = 0; $d < 30; $d++) {
-      $department = (new Department())->setName($faker->text(30));
-      $department->setSlug((new Slugify())->slugify($department->getName()));
-      $manager->persist($department);
-    }
-    // End Currency
-
-    // Departments
     $first = [
       "code" => "CDF",
       "flag" => "https://flagcdn.com/cd.svg",
@@ -82,6 +62,21 @@ class AppFixtures extends Fixture
       ->setRate(2800);
     $manager->persist($currency);
     // End Currency
+
+    for ($d=0; $d < 10; $d++) {
+      $department = (new Department())->setName($faker->text(30));
+      $department->setSlug((new Slugify())->slugify($department->getName()));
+      $manager->persist($department);
+    }
+
+    for ($p=0; $p < 20; $p++) {
+      $provinceName = $faker->city;
+      $provinceSlug = (new Slugify())->slugify($provinceName);
+      $province = (new Province())
+        ->setName($provinceName)
+        ->setSlug($provinceSlug);
+      $manager->persist($province);
+    }
 
     // ***********************************************************************************************
 

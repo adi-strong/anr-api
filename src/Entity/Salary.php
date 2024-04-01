@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Repository\SalaryRepository;
+use App\Traits\ReleasedAtTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -23,33 +24,40 @@ use Symfony\Component\Validator\Constraints as Assert;
   order: ['id' => 'desc'],
   forceEager: false
 )]
+#[ORM\HasLifecycleCallbacks]
 class Salary
 {
+  use ReleasedAtTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups([
       'salary:read',
+      'agent:read',
     ])]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2)]
     #[Assert\NotBlank(message: 'Le Montant de base est requis.')]
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups([
       'salary:read',
+      'agent:read',
     ])]
     private ?string $baseAmount = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
     #[Groups([
       'salary:read',
+      'agent:read',
     ])]
     private ?string $riskPremiumAmount = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
     #[Groups([
       'salary:read',
+      'agent:read',
     ])]
     private ?string $functionBonusAmount = null;
 
@@ -66,6 +74,7 @@ class Salary
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups([
       'salary:read',
+      'agent:read',
     ])]
     private ?Year $year = null;
 
@@ -76,8 +85,34 @@ class Salary
     #[Assert\Length(max: 2, maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.')]
     #[Groups([
       'salary:read',
+      'agent:read',
     ])]
     private ?string $month = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
+    #[Groups([
+      'salary:read',
+      'agent:read',
+    ])]
+    private ?string $total = '0';
+
+    #[ORM\Column]
+    #[Assert\NotBlank(message: 'La Devise doit être renseignée.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[Groups([
+      'salary:read',
+      'agent:read',
+    ])]
+    private array $currency = [];
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Assert\NotBlank(message: 'Le Taux doit être renseigné.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[Groups([
+      'salary:read',
+      'agent:read',
+    ])]
+    private ?string $rate = null;
 
     public function getId(): ?int
     {
@@ -155,4 +190,45 @@ class Salary
 
         return $this;
     }
+
+    public function getTotal(): ?string
+    {
+        return $this->total;
+    }
+
+    public function setTotal(?string $total): static
+    {
+        $this->total = $total;
+
+        return $this;
+    }
+
+  public function onPersist(): void
+  {
+    $this->setReleasedAt(new \DateTime());
+  }
+
+  public function getCurrency(): array
+  {
+      return $this->currency;
+  }
+
+  public function setCurrency(array $currency): static
+  {
+      $this->currency = $currency;
+
+      return $this;
+  }
+
+  public function getRate(): ?string
+  {
+      return $this->rate;
+  }
+
+  public function setRate(string $rate): static
+  {
+      $this->rate = $rate;
+
+      return $this;
+  }
 }

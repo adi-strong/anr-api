@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -28,6 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
   order: ['id' => 'desc'],
   forceEager: false
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
 class FuelSite
 {
   use IsDeletedTrait;
@@ -39,6 +42,7 @@ class FuelSite
       'f_site:read',
       'f_supply:read',
       'refueling:read',
+      'f_supply:read',
     ])]
     private ?int $id = null;
 
@@ -55,10 +59,13 @@ class FuelSite
       'f_site:read',
       'f_supply:read',
       'refueling:read',
+      'f_supply:read',
     ])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\NotBlank(message: 'Ce champ est requis.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups([
       'f_site:read',
       'f_supply:read',
@@ -75,9 +82,13 @@ class FuelSite
     #[ORM\OneToOne(mappedBy: 'site')]
     private ?Refueling $refueling = null;
 
+    #[ORM\OneToMany(targetEntity: FuelStockSupply::class, mappedBy: 'site')]
+    private Collection $fuelStockSupplies;
+
     public function __construct()
     {
         $this->fuels = new ArrayCollection();
+        $this->fuelStockSupplies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -151,6 +162,36 @@ class FuelSite
         }
 
         $this->refueling = $refueling;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, FuelStockSupply>
+     */
+    public function getFuelStockSupplies(): Collection
+    {
+        return $this->fuelStockSupplies;
+    }
+
+    public function addFuelStockSupply(FuelStockSupply $fuelStockSupply): static
+    {
+        if (!$this->fuelStockSupplies->contains($fuelStockSupply)) {
+            $this->fuelStockSupplies->add($fuelStockSupply);
+            $fuelStockSupply->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFuelStockSupply(FuelStockSupply $fuelStockSupply): static
+    {
+        if ($this->fuelStockSupplies->removeElement($fuelStockSupply)) {
+            // set the owning side to null (unless already changed)
+            if ($fuelStockSupply->getSite() === $this) {
+                $fuelStockSupply->setSite(null);
+            }
+        }
 
         return $this;
     }

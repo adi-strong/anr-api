@@ -7,6 +7,7 @@ use App\Entity\SocietyRecovery;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 #[AsController]
 final class AddNewSocietyRecoveryAction extends AbstractController
@@ -16,52 +17,60 @@ final class AddNewSocietyRecoveryAction extends AbstractController
     /* ------------------------------------ Handle Uploaded Files ------------------------------------ */
 
     $uploadCertificateFile = $request->files->get('certificateFile');
-    if (null !== $uploadCertificateFile) {
-      $certificateObject = new DocObject();
-      $certificateObject->file = $uploadCertificateFile;
-      $societyRecovery->setCertificate($certificateObject);
+    if (!$uploadCertificateFile) {
+      throw new BadRequestHttpException('L\'Homologation sécuritaire est requis.');
     }
+    $certificateObject = new DocObject();
+    $certificateObject->file = $uploadCertificateFile;
+    $societyRecovery->setCertificate($certificateObject);
 
     $uploadCallingCardFile = $request->files->get('callingCardFile');
-    if (null !== $uploadCallingCardFile) {
-      $callingCardObject = new DocObject();
-      $callingCardObject->file = $uploadCallingCardFile;
-      $societyRecovery->setCallingCard($callingCardObject);
+    if (!$uploadCallingCardFile) {
+      throw new BadRequestHttpException('L\'Avis de passage est requis.');
     }
+    $callingCardObject = new DocObject();
+    $callingCardObject->file = $uploadCallingCardFile;
+    $societyRecovery->setCallingCard($callingCardObject);
 
     $uploadPvFile = $request->files->get('pvFile');
-    if (null !== $uploadPvFile) {
-      $pvObject = new DocObject();
-      $pvObject->file = $uploadPvFile;
-      $societyRecovery->setPv($pvObject);
+    if (!$uploadPvFile) {
+      throw new BadRequestHttpException('Le PV est requis.');
     }
+    $pvObject = new DocObject();
+    $pvObject->file = $uploadPvFile;
+    $societyRecovery->setPv($pvObject);
 
     $uploadFormFile = $request->files->get('formFile');
-    if (null !== $uploadFormFile) {
-      $formObject = new DocObject();
-      $formObject->file = $uploadFormFile;
-      $societyRecovery->setForm($formObject);
+    if (!$uploadFormFile) {
+      throw new BadRequestHttpException('Le Formulaire est requis.');
     }
+    $formObject = new DocObject();
+    $formObject->file = $uploadFormFile;
+    $societyRecovery->setForm($formObject);
 
     $uploadExpenseReportFile = $request->files->get('expenseReportFile');
-    if (null !== $uploadExpenseReportFile) {
-      $expenseReportObject = new DocObject();
-      $expenseReportObject->file = $uploadExpenseReportFile;
-      $societyRecovery->setExpenseReport($expenseReportObject);
+    if (!$uploadExpenseReportFile) {
+      throw new BadRequestHttpException('La Note de frais est requise.');
     }
+    $expenseReportObject = new DocObject();
+    $expenseReportObject->file = $uploadExpenseReportFile;
+    $societyRecovery->setExpenseReport($expenseReportObject);
 
     $uploadProofOfPaymentFile = $request->files->get('proofOfPaymentFile');
-    if (null !== $uploadProofOfPaymentFile) {
-      $proofOfPaymentObject = new DocObject();
-      $proofOfPaymentObject->file = $uploadProofOfPaymentFile;
-      $societyRecovery->setProofOfPayment($proofOfPaymentObject);
+    if (!$uploadProofOfPaymentFile) {
+      throw new BadRequestHttpException('La Preuve de paiement est requise.');
     }
+    $proofOfPaymentObject = new DocObject();
+    $proofOfPaymentObject->file = $uploadProofOfPaymentFile;
+    $societyRecovery->setProofOfPayment($proofOfPaymentObject);
 
     /* ------------------------------------ End Handle Uploaded Files -------------------------------- */
 
     $releasedAt = $societyRecovery->getReleasedAt() ?? new \DateTime();
+    $type = $societyRecovery->getSociety()->getType();
 
     $societyRecovery
+      ->setType($type)
       ->setReleasedAt($releasedAt)
       ->setProvince($societyRecovery->getAgent()->getProvince());
 

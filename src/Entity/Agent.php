@@ -8,12 +8,14 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Actions\AgentActions\AddNewAgentAction;
+use App\Controller\Actions\AgentActions\DeleteAgentProfileAction;
 use App\Repository\AgentRepository;
 use App\Traits\IsDeletedTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,6 +26,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     new GetCollection(),
     new Get(),
     new Patch(),
+    new Patch(
+      uriTemplate: '/agents/{id}/delete-profile',
+      controller: DeleteAgentProfileAction::class
+    ),
     new Post(
       inputFormats: ['multipart' => ['multipart/form-data']],
       controller: AddNewAgentAction::class
@@ -181,8 +187,11 @@ class Agent
     ])]
     private ?string $sex = null;
 
-    #[ORM\Column(length: 8, nullable: true)]
+    #[ORM\Column(length: 8)]
+    #[Assert\NotBlank(message: 'Ce champ est requis.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Assert\Choice(['single', 'married'], message: 'État-civil invalide.')]
+    #[Assert\Length(max: 8, maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.')]
     #[Groups([
       'agent:read',
       'grade:read',
@@ -231,6 +240,8 @@ class Agent
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le N° de téléphone doit être renseigné.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Assert\Regex('#^\+?\d(?:[\s.-]?\d{2,3}){3,}$#', message: 'N° de Téléphone invalide.')]
     #[Assert\Length(max: 255, maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.')]
     #[Groups([
@@ -320,7 +331,7 @@ class Agent
     #[Assert\NotBlank(message: 'Le Groupe sanguin doit être renseigné.')]
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Assert\Length(
-      min: 2,
+      min: 1,
       max: 255,
       minMessage: 'Ce champ doit faire au moins {{ limit }} caractères.',
       maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.'
@@ -364,7 +375,7 @@ class Agent
     ])]
     private ?string $levelOfStudies = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Le Parrain doit être renseigné.')]
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Assert\Length(
@@ -384,7 +395,7 @@ class Agent
       'refueling:read',
       'society_rec:read',
     ])]
-    private ?self $godFather = null;
+    private ?string $godFather = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Le Numéro de téléphone du parrain doit être renseigné.')]
@@ -412,6 +423,8 @@ class Agent
     #[ORM\ManyToOne(inversedBy: 'agents')]
     #[Groups([
       'agent:read',
+      'assignment:read',
+      'salary:read',
     ])]
     private ?Grade $grade = null;
 
@@ -447,6 +460,7 @@ class Agent
     #[ORM\ManyToOne(inversedBy: 'agents')]
     #[Groups([
       'agent:read',
+      'assignment:read',
     ])]
     private ?Job $job = null;
 
@@ -467,6 +481,8 @@ class Agent
     #[ORM\OneToOne(inversedBy: 'agent', cascade: ['persist', 'remove'])]
     #[Groups([
       'agent:read',
+      'assignment:read',
+      'salary:read',
     ])]
     private ?ImageObject $profile = null;
 
@@ -475,9 +491,11 @@ class Agent
     private Collection $folders;
 
     #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'agent')]
+    #[Groups(['agent:read'])]
     private Collection $assignments;
 
     #[ORM\OneToMany(targetEntity: Salary::class, mappedBy: 'agent')]
+    #[Groups(['agent:read'])]
     private Collection $salaries;
 
     #[ORM\ManyToOne(inversedBy: 'agents')]
@@ -513,6 +531,19 @@ class Agent
     #[Groups(['agent:read'])]
     private Collection $societyRecoveries;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['agent:read'])]
+    private ?string $bornPlace = null;
+
+    public ?File $file = null;
+
+    #[ORM\OneToMany(targetEntity: Medical::class, mappedBy: 'agent')]
+    #[Groups([
+      'folder:read',
+      'agent:read',
+    ])]
+    private Collection $medicals;
+
     public function __construct()
     {
         $this->missions = new ArrayCollection();
@@ -522,6 +553,7 @@ class Agent
         $this->salaries = new ArrayCollection();
         $this->refuelings = new ArrayCollection();
         $this->societyRecoveries = new ArrayCollection();
+        $this->medicals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -741,18 +773,6 @@ class Agent
     public function setLevelOfStudies(string $levelOfStudies): static
     {
         $this->levelOfStudies = $levelOfStudies;
-
-        return $this;
-    }
-
-    public function getGodFather(): ?self
-    {
-        return $this->godFather;
-    }
-
-    public function setGodFather(?self $godFather): static
-    {
-        $this->godFather = $godFather;
 
         return $this;
     }
@@ -1100,6 +1120,60 @@ class Agent
             // set the owning side to null (unless already changed)
             if ($societyRecovery->getAgent() === $this) {
                 $societyRecovery->setAgent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getBornPlace(): ?string
+    {
+        return $this->bornPlace;
+    }
+
+    public function setBornPlace(?string $bornPlace): static
+    {
+        $this->bornPlace = $bornPlace;
+
+        return $this;
+    }
+
+    public function getGodFather(): ?string
+    {
+        return $this->godFather;
+    }
+
+    public function setGodFather(string $godFather): static
+    {
+        $this->godFather = $godFather;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Medical>
+     */
+    public function getMedicals(): Collection
+    {
+        return $this->medicals;
+    }
+
+    public function addMedical(Medical $medical): static
+    {
+        if (!$this->medicals->contains($medical)) {
+            $this->medicals->add($medical);
+            $medical->setAgent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedical(Medical $medical): static
+    {
+        if ($this->medicals->removeElement($medical)) {
+            // set the owning side to null (unless already changed)
+            if ($medical->getAgent() === $this) {
+                $medical->setAgent(null);
             }
         }
 

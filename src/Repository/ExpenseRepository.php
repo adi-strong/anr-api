@@ -54,9 +54,9 @@ class ExpenseRepository extends ServiceEntityRepository
   {
     $query = $this->createQueryBuilder('p');
     $query
-      ->where($query->expr()->like('p.name', ':name'))
+      ->where($query->expr()->like('p.object', ':name'))
       ->setParameter('name', '%'.$name.'%')
-      ->orderBy('p.name', 'ASC');
+      ->orderBy('p.object', 'ASC');
 
     return $query->getQuery()->getResult();
   }

@@ -39,6 +39,12 @@ class FuelStockSupply
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     private ?FuelSupply $supply = null;
 
+    #[ORM\ManyToOne(inversedBy: 'fuelStockSupplies')]
+    #[Groups([
+      'f_supply:read',
+    ])]
+    private ?FuelSite $site = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +82,18 @@ class FuelStockSupply
     public function setSupply(?FuelSupply $supply): static
     {
         $this->supply = $supply;
+
+        return $this;
+    }
+
+    public function getSite(): ?FuelSite
+    {
+        return $this->site;
+    }
+
+    public function setSite(?FuelSite $site): static
+    {
+        $this->site = $site;
 
         return $this;
     }

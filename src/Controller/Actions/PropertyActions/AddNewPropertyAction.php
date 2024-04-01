@@ -17,14 +17,13 @@ final class AddNewPropertyAction extends AbstractController
     $createdAt = new \DateTime();
 
     $uploadedFile = $request->files->get('file');
-    if (!$uploadedFile) throw new BadRequestHttpException('file: Le fichier est requis.');
+    if (null !== $uploadedFile) {
+      $imageObject = new ImageObject();
+      $imageObject->file = $uploadedFile;
+      $property->setImageObject($imageObject);
+    }
 
-    $imageObject = new ImageObject();
-    $imageObject->file = $uploadedFile;
-
-    $property
-      ->setCreatedAt($createdAt)
-      ->setImageObject($imageObject);
+    $property->setCreatedAt($createdAt);
 
     return $property;
   }

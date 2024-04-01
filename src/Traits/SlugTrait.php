@@ -15,6 +15,7 @@ trait SlugTrait
     'grade:read',
     'job:read',
     'year:read',
+    'agent:read',
   ])]
   private ?string $slug = null;
 

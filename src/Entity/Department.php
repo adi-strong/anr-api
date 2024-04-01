@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -30,6 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
   order: ['id' => 'desc'],
   forceEager: false
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
 class Department
 {
   use SlugTrait, IsDeletedTrait;
@@ -90,6 +93,7 @@ class Department
     #[ORM\OneToMany(targetEntity: DepartmentService::class, mappedBy: 'department')]
     #[Groups([
       'dep:read',
+      'agent:read',
     ])]
     private Collection $departmentServices;
 
@@ -98,6 +102,7 @@ class Department
     private ?bool $isSubDep = false;
 
     #[ORM\OneToMany(targetEntity: Grade::class, mappedBy: 'department')]
+    #[Groups(['dep:read', 'agent:read',])]
     private Collection $grades;
 
     #[ORM\OneToMany(targetEntity: Agent::class, mappedBy: 'department')]

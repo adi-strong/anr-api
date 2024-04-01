@@ -45,4 +45,25 @@ class PropertyRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+  /**
+   * @param mixed $keyword
+   * @return Property[]
+   */
+  public function findProperties(mixed $keyword): array
+  {
+    $qb = $this->createQueryBuilder('p')
+      ->join('p.province', 'pr')
+      ->join('p.type', 't');
+
+    $qb->where(
+      $qb->expr()->orX(
+        $qb->expr()->like('pr.name', ':keyword'),
+        $qb->expr()->like('t.name', ':keyword'),
+        $qb->expr()->like('p.number', ':keyword'),
+      )
+    )->setParameter('keyword', '%' . $keyword . '%');
+
+    return $qb->getQuery()->getResult();
+  }
 }

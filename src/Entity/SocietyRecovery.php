@@ -22,8 +22,6 @@ use Symfony\Component\Validator\Constraints as Assert;
   operations: [
     new GetCollection(),
     new Get(),
-    new Delete(),
-    new Patch(),
     new Post(
       inputFormats: ['multipart' => ['multipart/form-data']],
       controller: AddNewSocietyRecoveryAction::class
@@ -55,8 +53,6 @@ class SocietyRecovery
     private ?Agent $agent = null;
 
     #[ORM\ManyToOne(inversedBy: 'societyRecoveries')]
-    #[Assert\NotBlank(message: 'Ce champs est requis.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups([
       'society_rec:read',
       'agent:read',
@@ -131,14 +127,14 @@ class SocietyRecovery
   /* ------------------------------------ ------------------------------------ */
 
   #[ORM\ManyToOne(inversedBy: 'societyRecoveries')]
+  #[Assert\NotBlank(message: 'La Province doit être renseignée.')]
+  #[Assert\NotBlank(message: 'Ce champs doit être renseigné.')]
   #[Groups([
     'society_rec:read',
   ])]
   private ?Province $province = null;
 
   #[ORM\Column]
-  #[Assert\NotBlank(message: 'Ce champs est requis.')]
-  #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
   #[Groups([
     'society_rec:read',
   ])]

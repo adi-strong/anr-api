@@ -24,12 +24,16 @@ use Symfony\Component\Validator\Constraints as Assert;
     new GetCollection(),
     new Get(),
     new Patch(),
-    new Post(controller: AddNewPropertyAction::class),
+    new Post(
+      inputFormats: ['multipart' => ['multipart/form-data']],
+      controller: AddNewPropertyAction::class
+    ),
   ],
   normalizationContext: ['groups' => ['property:read']],
   order: ['id' => 'desc'],
   forceEager: false
 )]
+#[ORM\HasLifecycleCallbacks]
 class Property
 {
   use CreatedAtTrait, UpdatedAtTrait, IsDeletedTrait;
@@ -106,10 +110,11 @@ class Property
     private ?string $surface = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Length(max: 255, maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.')]
     #[Groups([
       'property:read',
     ])]
-    private ?int $pieces = null;
+    private ?string $pieces = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6, nullable: true)]
     #[Groups([
@@ -122,20 +127,6 @@ class Property
       'property:read',
     ])]
     private ?string $description = null;
-
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'L\'état doit être renseigné.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
-    #[Assert\Length(
-      min: 2,
-      max: 255,
-      minMessage: 'Ce champ doit faire au moins {{ limit }} caractères.',
-      maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.'
-    )]
-    #[Groups([
-      'property:read',
-    ])]
-    private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'properties')]
     #[Groups([
@@ -161,7 +152,7 @@ class Property
     #[Groups([
       'property:read',
     ])]
-    private ?bool $isAvailable = false;
+    private ?bool $isAvailable = true;
 
     #[ORM\OneToOne(inversedBy: 'property', cascade: ['persist', 'remove'])]
     #[Groups([
@@ -260,12 +251,12 @@ class Property
         return $this;
     }
 
-    public function getPieces(): ?int
+    public function getPieces(): ?string
     {
         return $this->pieces;
     }
 
-    public function setPieces(?int $pieces): static
+    public function setPieces(?string $pieces): static
     {
         $this->pieces = $pieces;
 
@@ -292,18 +283,6 @@ class Property
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): static
-    {
-        $this->status = $status;
 
         return $this;
     }
@@ -391,4 +370,10 @@ class Property
 
         return $this;
     }
+
+  #[ORM\PreUpdate]
+  public function onUpdate(): void
+  {
+    $this->setUpdatedAt(new \DateTime());
+  }
 }

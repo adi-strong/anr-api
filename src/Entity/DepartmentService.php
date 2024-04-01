@@ -71,12 +71,14 @@ class DepartmentService
     #[Groups([
       'serv:read',
       'dep:read',
+      'agent:read',
     ])]
     private Collection $jobs;
 
     #[ORM\OneToMany(targetEntity: Agent::class, mappedBy: 'service')]
     #[Groups([
       'serv:read',
+      'dep:read',
     ])]
     private Collection $agents;
 

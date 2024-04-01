@@ -7,6 +7,7 @@ use App\Entity\Society;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 #[AsController]
 final class AddNewSocietyAction extends AbstractController
@@ -14,11 +15,12 @@ final class AddNewSocietyAction extends AbstractController
   public function __invoke(Society $society, Request $request): Society
   {
     $uploadedRccmFile = $request->files->get('rccmFile');
-    if (null !== $uploadedRccmFile) {
-      $rccmObject = new DocObject();
-      $rccmObject->file = $uploadedRccmFile;
-      $society->setRccm($rccmObject);
+    if (!$uploadedRccmFile) {
+      throw new BadRequestHttpException('Le fichier est requis.');
     }
+    $rccmObject = new DocObject();
+    $rccmObject->file = $uploadedRccmFile;
+    $society->setRccm($rccmObject);
 
     return $society;
   }

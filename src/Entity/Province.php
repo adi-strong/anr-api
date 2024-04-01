@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -30,6 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
   order: ['id' => 'desc'],
   forceEager: false
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
 #[UniqueEntity('name', message: 'Ce nom de Province est déjà pris.')]
 #[ORM\HasLifecycleCallbacks]
 class Province
@@ -45,6 +48,7 @@ class Province
       'property:read',
       'society:read',
       'society_rec:read',
+      'assignment:read',
     ])]
     private ?int $id = null;
 
@@ -63,6 +67,7 @@ class Province
       'property:read',
       'society:read',
       'society_rec:read',
+      'assignment:read',
     ])]
     private ?string $name = null;
 

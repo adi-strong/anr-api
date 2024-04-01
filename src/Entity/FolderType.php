@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Controller\Actions\FolderActions\AddNewFolderAction;
 use App\Repository\FolderTypeRepository;
 use App\Traits\IsDeletedTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
   normalizationContext: ['groups' => ['f_type:read']],
   forceEager: false
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
 class FolderType
 {
   use IsDeletedTrait;

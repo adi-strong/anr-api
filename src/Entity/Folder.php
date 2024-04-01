@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Actions\FolderActions\AddNewFolderAction;
 use App\Repository\FolderRepository;
+use App\Traits\ReleasedAtTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -26,8 +27,11 @@ use Symfony\Component\Validator\Constraints as Assert;
   normalizationContext: ['groups' => ['folder:read']],
   forceEager: false
 )]
+#[ORM\HasLifecycleCallbacks]
 class Folder
 {
+  use ReleasedAtTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -49,6 +53,7 @@ class Folder
     #[ORM\OneToOne(inversedBy: 'folder', cascade: ['persist', 'remove'])]
     #[Groups([
       'folder:read',
+      'agent:read',
     ])]
     private ?DocObject $docObject = null;
 
@@ -100,4 +105,10 @@ class Folder
 
         return $this;
     }
+
+  #[ORM\PrePersist]
+  public function onPersist(): void
+  {
+    $this->setReleasedAt(new \DateTime());
+  }
 }

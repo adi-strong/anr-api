@@ -4,6 +4,7 @@ namespace App\Controller\Actions\AssignmentActions;
 
 use App\Entity\Assignment;
 use App\Repository\YearRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -11,7 +12,10 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 #[AsController]
 final class AddNewAssignmentAction extends AbstractController
 {
-  public function __construct(private readonly YearRepository $yearRepository) { }
+  public function __construct(
+    private readonly YearRepository $yearRepository,
+    private readonly EntityManagerInterface $em
+  ) { }
 
   public function __invoke(Assignment $assignment): Assignment
   {
@@ -20,6 +24,23 @@ final class AddNewAssignmentAction extends AbstractController
       $assignment->setYear($lastSession);
     }
     else throw new BadRequestHttpException('year: Aucune année en cours.');
+
+    $destination = $assignment->getDestination();
+    $paths = [];
+    if (null !== $destination) {
+      $paths = $destination->getPaths();
+    }
+
+    $agent = $assignment->getAgent();
+    $agent
+      ->setProvince($assignment->getProvince())
+      ->setDepartment($assignment->getDestination());
+
+    $assignment
+      ->setPaths($paths)
+      ->setOrigin($agent->getDepartment());
+
+    $this->em->flush();
 
     return $assignment;
   }

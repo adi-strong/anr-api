@@ -4,7 +4,6 @@ namespace App\Controller\Actions\MedicalActions;
 
 use App\Entity\DocObject;
 use App\Entity\Medical;
-use App\Entity\MedicalFile;
 use App\Repository\YearRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -29,7 +28,6 @@ final class AddNewMedicalAction extends AbstractController
     else throw new BadRequestHttpException('year: Aucune année en cours.');
 
     $createdAt = new \DateTime();
-    $medicalFile = new MedicalFile();
     $user = $this->security->getUser();
 
     $uploadedFile = $request->files->get('file');
@@ -38,12 +36,8 @@ final class AddNewMedicalAction extends AbstractController
     $docObject = new DocObject();
     $docObject->file = $uploadedFile;
 
-    $medicalFile
-      ->setUser($user)
-      ->setDocObject($docObject)
-      ->setCreatedAt($createdAt);
-
-    $medical->addMedicalFile($medicalFile);
+    $medical
+      ->setDocObject($docObject);
 
     return $medical;
   }

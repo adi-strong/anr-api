@@ -67,6 +67,7 @@ class DocObject
     'med:read',
     'society:read',
     'province:read',
+    'vehicle:read',
   ])]
   public ?string $contentUrl = null;
 
@@ -88,9 +89,6 @@ class DocObject
 
   #[ORM\OneToOne(mappedBy: 'docObject')]
   private ?Folder $folder = null;
-
-  #[ORM\OneToMany(targetEntity: MedicalFile::class, mappedBy: 'docObject')]
-  private Collection $medicalFiles;
 
   #[ORM\OneToOne(mappedBy: 'certificate')]
   private ?Vehicle $vehicle = null;
@@ -116,10 +114,8 @@ class DocObject
   #[ORM\OneToOne(mappedBy: 'proofOfPayment')]
   private ?SocietyRecovery $societyProofOfPayment = null;
 
-  public function __construct()
-  {
-      $this->medicalFiles = new ArrayCollection();
-  }
+  #[ORM\OneToOne(mappedBy: 'docObject')]
+  private ?Medical $medical = null;
 
     public function getId(): ?int
     {
@@ -210,36 +206,6 @@ class DocObject
         }
 
         $this->folder = $folder;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, MedicalFile>
-     */
-    public function getMedicalFiles(): Collection
-    {
-        return $this->medicalFiles;
-    }
-
-    public function addMedicalFile(MedicalFile $medicalFile): static
-    {
-        if (!$this->medicalFiles->contains($medicalFile)) {
-            $this->medicalFiles->add($medicalFile);
-            $medicalFile->setDocObject($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMedicalFile(MedicalFile $medicalFile): static
-    {
-        if ($this->medicalFiles->removeElement($medicalFile)) {
-            // set the owning side to null (unless already changed)
-            if ($medicalFile->getDocObject() === $this) {
-                $medicalFile->setDocObject(null);
-            }
-        }
 
         return $this;
     }
@@ -350,6 +316,28 @@ class DocObject
         }
 
         $this->societyPv = $societyPv;
+
+        return $this;
+    }
+
+    public function getMedical(): ?Medical
+    {
+        return $this->medical;
+    }
+
+    public function setMedical(?Medical $medical): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($medical === null && $this->medical !== null) {
+            $this->medical->setDocObject(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($medical !== null && $medical->getDocObject() !== $this) {
+            $medical->setDocObject($this);
+        }
+
+        $this->medical = $medical;
 
         return $this;
     }

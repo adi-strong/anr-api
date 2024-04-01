@@ -30,16 +30,20 @@ final class AddNewMissionAction extends AbstractController
     /* --------------------------------------- FILES TO UPLOAD ----------------------------------------------- */
     $roadmapFileUploaded = $request->files->get('roadmapFile');
     $exitPermitFileUploaded = $request->files->get('exitPermitFile');
-    $missionOrderFileUploaded = $request->files->get('$missionOrderFile');
+    $missionOrderFileUploaded = $request->files->get('missionOrderFile');
 
     if (!$roadmapFileUploaded) {
-      throw new BadRequestHttpException('roadmap: La Feuille de route doit être renseignée.');
+      throw new BadRequestHttpException(
+        'roadmapFile:La Feuille de route doit être renseignée'
+      );
     }
     if (!$exitPermitFileUploaded) {
-      throw new BadRequestHttpException('exitPermit: La Permission de sortie doit être renseignée.');
+      throw new BadRequestHttpException(
+        'exitPermitFile:La Permission de sortie doit être renseignée');
     }
     if (!$missionOrderFileUploaded) {
-      throw new BadRequestHttpException('exitPermit: L\'Ordre de mission doit être renseignée.');
+      throw new BadRequestHttpException(
+        'missionOrderFile:L\'Ordre de mission doit être renseignée');
     }
 
     $roadmapDoc = new DocObject();

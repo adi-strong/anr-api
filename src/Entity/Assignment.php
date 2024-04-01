@@ -39,27 +39,20 @@ class Assignment
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Assert\NotBlank(message: 'La Date de début doit être renseignée.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups(['assignment:read', 'agent:read'])]
     private ?\DateTimeInterface $startAt = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Assert\NotBlank(message: 'La Date de fin doit être renseignée.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups(['assignment:read', 'agent:read'])]
     private ?\DateTimeInterface $endAt = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank(message: 'L\'État doit être renseigné.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[ORM\Column(nullable: true)]
     #[Groups(['assignment:read', 'agent:read'])]
-    private ?bool $isActive = false;
+    private ?bool $isActive = true;
 
     #[ORM\ManyToOne(inversedBy: 'assignments')]
-    #[Assert\NotBlank(message: 'La Provenance doit être renseignée.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups(['assignment:read', 'agent:read'])]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Department $origin = null;
 
     #[ORM\ManyToOne(inversedBy: 'assignmentDestinations')]
@@ -82,6 +75,9 @@ class Assignment
     private ?Year $year = null;
 
     #[ORM\ManyToOne(inversedBy: 'assignments')]
+    #[Assert\NotBlank(message: 'Ce champ est requis.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[Groups(['assignment:read', 'agent:read'])]
     private ?Province $province = null;
 
     public function getId(): ?int
@@ -118,7 +114,7 @@ class Assignment
         return $this->isActive;
     }
 
-    public function setIsActive(bool $isActive): static
+    public function setIsActive(?bool $isActive): static
     {
         $this->isActive = $isActive;
 

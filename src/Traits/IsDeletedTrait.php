@@ -14,6 +14,10 @@ trait IsDeletedTrait
     'grade:read',
     'job:read',
     'agent:read',
+    'f_site:read',
+    'fuel:read',
+    'society:read',
+    'province:read',
   ])]
   private ?bool $isDeleted = false;
 

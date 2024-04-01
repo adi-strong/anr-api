@@ -39,6 +39,8 @@ class Job
       'job:read',
       'serv:read',
       'dep:read',
+      'agent:read',
+      'assignment:read',
     ])]
     private ?int $id = null;
 
@@ -55,6 +57,8 @@ class Job
       'job:read',
       'serv:read',
       'dep:read',
+      'agent:read',
+      'assignment:read',
     ])]
     private ?string $name = null;
 
