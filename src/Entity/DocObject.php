@@ -117,6 +117,9 @@ class DocObject
   #[ORM\OneToOne(mappedBy: 'docObject')]
   private ?Medical $medical = null;
 
+  #[ORM\OneToOne(mappedBy: 'doc')]
+  private ?AgentState $agentState = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -338,6 +341,28 @@ class DocObject
         }
 
         $this->medical = $medical;
+
+        return $this;
+    }
+
+    public function getAgentState(): ?AgentState
+    {
+        return $this->agentState;
+    }
+
+    public function setAgentState(?AgentState $agentState): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($agentState === null && $this->agentState !== null) {
+            $this->agentState->setDoc(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($agentState !== null && $agentState->getDoc() !== $this) {
+            $agentState->setDoc($this);
+        }
+
+        $this->agentState = $agentState;
 
         return $this;
     }

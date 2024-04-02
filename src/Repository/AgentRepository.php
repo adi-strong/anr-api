@@ -63,4 +63,17 @@ class AgentRepository extends ServiceEntityRepository
 
     return $qb->getQuery()->getResult();
   }
+
+  /**
+   * @param string $state
+   * @return Agent[]
+   */
+  public function findAgentsByState(string $state): array
+  {
+    return $this->createQueryBuilder('a')
+      ->where('a.state = :state')
+      ->setParameter('state', $state)
+      ->getQuery()
+      ->getResult();
+  }
 }

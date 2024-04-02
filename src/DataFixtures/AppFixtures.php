@@ -63,7 +63,7 @@ class AppFixtures extends Fixture
     $manager->persist($currency);
     // End Currency
 
-    for ($d=0; $d < 10; $d++) {
+    /*for ($d=0; $d < 10; $d++) {
       $department = (new Department())->setName($faker->text(30));
       $department->setSlug((new Slugify())->slugify($department->getName()));
       $manager->persist($department);
@@ -76,7 +76,7 @@ class AppFixtures extends Fixture
         ->setName($provinceName)
         ->setSlug($provinceSlug);
       $manager->persist($province);
-    }
+    }*/
 
     // ***********************************************************************************************
 

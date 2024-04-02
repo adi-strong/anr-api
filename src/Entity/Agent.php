@@ -43,6 +43,10 @@ class Agent
 {
   use IsDeletedTrait;
 
+  public ?\DateTimeInterface $startAt = null;
+
+  public ?\DateTimeInterface $endAt = null;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -441,7 +445,16 @@ class Agent
     private ?DepartmentService $service = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Choice(['active', 'inactive', 'suspended', 'leave', 'unavailable'], message: 'État invalide.')]
+    #[Assert\Choice([
+      'active',
+      'inactive',
+      'suspended',
+      'leave',
+      'unavailable',
+      'retired',
+      'dead',
+      'sick',
+    ], message: 'État invalide.')]
     #[Groups([
       'agent:read',
       'grade:read',
@@ -544,6 +557,9 @@ class Agent
     ])]
     private Collection $medicals;
 
+    #[ORM\OneToMany(targetEntity: AgentState::class, mappedBy: 'agent')]
+    private Collection $agentStates;
+
     public function __construct()
     {
         $this->missions = new ArrayCollection();
@@ -554,6 +570,7 @@ class Agent
         $this->refuelings = new ArrayCollection();
         $this->societyRecoveries = new ArrayCollection();
         $this->medicals = new ArrayCollection();
+        $this->agentStates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -1174,6 +1191,36 @@ class Agent
             // set the owning side to null (unless already changed)
             if ($medical->getAgent() === $this) {
                 $medical->setAgent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AgentState>
+     */
+    public function getAgentStates(): Collection
+    {
+        return $this->agentStates;
+    }
+
+    public function addAgentState(AgentState $agentState): static
+    {
+        if (!$this->agentStates->contains($agentState)) {
+            $this->agentStates->add($agentState);
+            $agentState->setAgent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAgentState(AgentState $agentState): static
+    {
+        if ($this->agentStates->removeElement($agentState)) {
+            // set the owning side to null (unless already changed)
+            if ($agentState->getAgent() === $this) {
+                $agentState->setAgent(null);
             }
         }
 
