@@ -26,6 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     new Post(),
   ],
   normalizationContext: ['groups' => ['f_type:read']],
+  order: ['id' => 'desc'],
   forceEager: false
 )]
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]

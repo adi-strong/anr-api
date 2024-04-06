@@ -55,7 +55,8 @@ final class CreateFuelSupplyAction extends AbstractController
           ->setFuel($fuel)
           ->setSite($site)
           ->setSupply($supply)
-          ->setQuantity($quantity);
+          ->setQuantity($quantity)
+          ->setCreatedAt($createdAt);
         $supply->addFuelStockSupply($fuelStock);
       }
     }

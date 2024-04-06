@@ -73,13 +73,14 @@ class Fuel
     #[ORM\OneToMany(targetEntity: FuelStockSupply::class, mappedBy: 'fuel')]
     private Collection $fuelStockSupplies;
 
-    #[ORM\OneToOne(mappedBy: 'fuel')]
-    private ?Refueling $refueling = null;
+    #[ORM\OneToMany(targetEntity: Refueling::class, mappedBy: 'fuel')]
+    private Collection $refuelings;
 
     public function __construct()
     {
         $this->fuelSites = new ArrayCollection();
         $this->fuelStockSupplies = new ArrayCollection();
+        $this->refuelings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -168,24 +169,32 @@ class Fuel
         return $this;
     }
 
-    public function getRefueling(): ?Refueling
+    /**
+     * @return Collection<int, Refueling>
+     */
+    public function getRefuelings(): Collection
     {
-        return $this->refueling;
+        return $this->refuelings;
     }
 
-    public function setRefueling(?Refueling $refueling): static
+    public function addRefueling(Refueling $refueling): static
     {
-        // unset the owning side of the relation if necessary
-        if ($refueling === null && $this->refueling !== null) {
-            $this->refueling->setFuel(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($refueling !== null && $refueling->getFuel() !== $this) {
+        if (!$this->refuelings->contains($refueling)) {
+            $this->refuelings->add($refueling);
             $refueling->setFuel($this);
         }
 
-        $this->refueling = $refueling;
+        return $this;
+    }
+
+    public function removeRefueling(Refueling $refueling): static
+    {
+        if ($this->refuelings->removeElement($refueling)) {
+            // set the owning side to null (unless already changed)
+            if ($refueling->getFuel() === $this) {
+                $refueling->setFuel(null);
+            }
+        }
 
         return $this;
     }

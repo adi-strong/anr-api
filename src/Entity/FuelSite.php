@@ -79,16 +79,17 @@ class FuelSite
     ])]
     private Collection $fuels;
 
-    #[ORM\OneToOne(mappedBy: 'site')]
-    private ?Refueling $refueling = null;
-
     #[ORM\OneToMany(targetEntity: FuelStockSupply::class, mappedBy: 'site')]
     private Collection $fuelStockSupplies;
+
+    #[ORM\OneToMany(targetEntity: Refueling::class, mappedBy: 'site')]
+    private Collection $refuelings;
 
     public function __construct()
     {
         $this->fuels = new ArrayCollection();
         $this->fuelStockSupplies = new ArrayCollection();
+        $this->refuelings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -144,28 +145,6 @@ class FuelSite
         return $this;
     }
 
-    public function getRefueling(): ?Refueling
-    {
-        return $this->refueling;
-    }
-
-    public function setRefueling(?Refueling $refueling): static
-    {
-        // unset the owning side of the relation if necessary
-        if ($refueling === null && $this->refueling !== null) {
-            $this->refueling->setSite(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($refueling !== null && $refueling->getSite() !== $this) {
-            $refueling->setSite($this);
-        }
-
-        $this->refueling = $refueling;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, FuelStockSupply>
      */
@@ -190,6 +169,36 @@ class FuelSite
             // set the owning side to null (unless already changed)
             if ($fuelStockSupply->getSite() === $this) {
                 $fuelStockSupply->setSite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Refueling>
+     */
+    public function getRefuelings(): Collection
+    {
+        return $this->refuelings;
+    }
+
+    public function addRefueling(Refueling $refueling): static
+    {
+        if (!$this->refuelings->contains($refueling)) {
+            $this->refuelings->add($refueling);
+            $refueling->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRefueling(Refueling $refueling): static
+    {
+        if ($this->refuelings->removeElement($refueling)) {
+            // set the owning side to null (unless already changed)
+            if ($refueling->getSite() === $this) {
+                $refueling->setSite(null);
             }
         }
 

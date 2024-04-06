@@ -45,4 +45,38 @@ class RefuelingRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+  /**
+   * @param string $startAt
+   * @param string $endAt
+   * @return Refueling[]
+   */
+  public function findRecoveriesBetweenDates(string $startAt, string $endAt): array
+  {
+    return $this->createQueryBuilder('r')
+      ->join('r.vehicle', 'v')
+      ->join('r.agent', 'a')
+      ->andWhere('SUBSTRING(r.createdAt, 1, 10) BETWEEN :startAt AND :endAt')
+      ->setParameter('startAt', $startAt)
+      ->setParameter('endAt', $endAt)
+      ->orderBy('r.createdAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+  }
+
+  /**
+   * @param string $date
+   * @return Refueling[]
+   */
+  public function findRecoveryByDate(string $date): array
+  {
+    return $this->createQueryBuilder('r')
+      ->join('r.vehicle', 'v')
+      ->join('r.agent', 'a')
+      ->andWhere('SUBSTRING(r.createdAt, 1, 10) = :date')
+      ->setParameter('date', $date)
+      ->orderBy('r.createdAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+  }
 }

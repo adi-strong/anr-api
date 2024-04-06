@@ -49,9 +49,6 @@ final class SearchExpenseAction extends AbstractController
         $currency = $report->getCurrency();
         $rate = $report->getRate();
 
-        $amount1 = 0;
-        $amount2 = 0;
-
         if ($currency['symbol'] === $lastCurrency->getFirst()['symbol']) {
           $amount1 = $report->getTotal();
           $amount2 = $amount1 / $rate;

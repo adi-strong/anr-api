@@ -260,7 +260,7 @@ class Department
   #[Groups(['dep:read', 'serv:read', 'grade:read',])]
   public function getNbAgents(): int
   {
-    return 0;
+    return $this->getAgents()->count();
   }
 
   #[Groups(['dep:read', 'serv:read', 'grade:read',])]
@@ -274,7 +274,8 @@ class Department
           $data[] = [
             'id' => $service->getId(),
             'name' => $service->getName(),
-            'slug' => $service->getSlug()
+            'slug' => $service->getSlug(),
+            'nbAgents' => $this->getNbAgents(),
           ];
         }
       }

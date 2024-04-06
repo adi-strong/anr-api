@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\FuelStockSupplyRepository;
+use App\Traits\CreatedAtTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -10,6 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: FuelStockSupplyRepository::class)]
 class FuelStockSupply
 {
+  use CreatedAtTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

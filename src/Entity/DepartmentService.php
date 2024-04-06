@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\DepartmentServiceRepository;
@@ -19,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: DepartmentServiceRepository::class)]
 #[ApiResource(
   operations: [
+    new GetCollection(),
     new Get(),
     new Patch(),
     new Post(),
@@ -27,6 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
   order: ['id' => 'desc'],
   forceEager: false
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
 #[ORM\HasLifecycleCallbacks]
 class DepartmentService
 {
@@ -42,6 +47,7 @@ class DepartmentService
       'agent:read',
       'vehicle:read',
       'v_ass:read',
+      'job:read',
     ])]
     private ?int $id = null;
 
@@ -61,6 +67,7 @@ class DepartmentService
       'agent:read',
       'vehicle:read',
       'v_ass:read',
+      'job:read',
     ])]
     private ?string $name = null;
 
@@ -214,5 +221,12 @@ class DepartmentService
       }
 
       return $this;
+  }
+
+
+  #[Groups(['dep:read', 'serv:read'])]
+  public function getNbAgents(): int
+  {
+    return $this->getAgents()->count();
   }
 }

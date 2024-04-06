@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Controller\Actions\FuelActions\CreateRefuelingAction;
 use App\Repository\RefuelingRepository;
 use App\Traits\CreatedAtTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,13 +18,12 @@ use Symfony\Component\Validator\Constraints as Assert;
   operations: [
     new GetCollection(),
     new Get(),
-    new Post(),
+    new Post(controller: CreateRefuelingAction::class),
   ],
   normalizationContext: ['groups' => ['refueling:read']],
   order: ['id' => 'desc'],
   forceEager: false
 )]
-#[ORM\HasLifecycleCallbacks]
 class Refueling
 {
   use CreatedAtTrait;
@@ -44,30 +44,6 @@ class Refueling
     ])]
     private ?float $quantity = null;
 
-    #[ORM\OneToOne(inversedBy: 'refueling')]
-    #[Assert\NotBlank(message: 'Le Site doit être renseigné.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
-    #[Groups([
-      'refueling:read',
-    ])]
-    private ?FuelSite $site = null;
-
-    #[ORM\OneToOne(inversedBy: 'refueling')]
-    #[Assert\NotBlank(message: 'Ce champ est requis.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
-    #[Groups([
-      'refueling:read',
-    ])]
-    private ?Fuel $fuel = null;
-
-    #[ORM\OneToOne(inversedBy: 'refueling')]
-    #[Assert\NotBlank(message: 'Le Véhicule doit être renseigné.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
-    #[Groups([
-      'refueling:read',
-    ])]
-    private ?Vehicle $vehicle = null;
-
     #[ORM\ManyToOne(inversedBy: 'refuelings')]
     #[Assert\NotBlank(message: 'L\'Agent doit être renseigné.')]
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
@@ -75,6 +51,30 @@ class Refueling
       'refueling:read',
     ])]
     private ?Agent $agent = null;
+
+    #[ORM\ManyToOne(inversedBy: 'refuelings')]
+    #[Assert\NotBlank(message: 'Le Site doit être renseigné.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[Groups([
+      'refueling:read',
+    ])]
+    private ?FuelSite $site = null;
+
+    #[ORM\ManyToOne(inversedBy: 'refuelings')]
+    #[Assert\NotBlank(message: 'Ce champ est requis.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[Groups([
+      'refueling:read',
+    ])]
+    private ?Fuel $fuel = null;
+
+    #[ORM\ManyToOne(inversedBy: 'refuelings')]
+    #[Assert\NotBlank(message: 'Le Véhicule doit être renseigné.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[Groups([
+      'refueling:read',
+    ])]
+    private ?Vehicle $vehicle = null;
 
     public function getId(): ?int
     {
@@ -89,6 +89,18 @@ class Refueling
     public function setQuantity(float $quantity): static
     {
         $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function getAgent(): ?Agent
+    {
+        return $this->agent;
+    }
+
+    public function setAgent(?Agent $agent): static
+    {
+        $this->agent = $agent;
 
         return $this;
     }
@@ -128,22 +140,4 @@ class Refueling
 
         return $this;
     }
-
-    public function getAgent(): ?Agent
-    {
-        return $this->agent;
-    }
-
-    public function setAgent(?Agent $agent): static
-    {
-        $this->agent = $agent;
-
-        return $this;
-    }
-
-  #[ORM\PrePersist]
-  public function onPersist(): void
-  {
-    $this->setCreatedAt(new \DateTime());
-  }
 }

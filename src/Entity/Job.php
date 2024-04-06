@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\JobRepository;
@@ -12,6 +15,7 @@ use App\Traits\SlugTrait;
 use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,6 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: JobRepository::class)]
 #[ApiResource(
   operations: [
+    new GetCollection(),
     new Get(),
     new Patch(),
     new Post(),
@@ -27,6 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
   order: ['id' => 'desc'],
   forceEager: false
 )]
+#[ApiFilter(SearchFilter::class, properties: ['name' => 'ipartial'])]
 #[ORM\HasLifecycleCallbacks]
 class Job
 {
@@ -66,11 +72,18 @@ class Job
     ])]
     private ?string $name = null;
 
+    #[Assert\NotBlank(message: 'Le Service doit être renseigné.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[ORM\ManyToOne(inversedBy: 'jobs')]
+    #[Groups(['job:read',])]
     private ?DepartmentService $service = null;
 
     #[ORM\OneToMany(targetEntity: Agent::class, mappedBy: 'job')]
     private Collection $agents;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['job:read',])]
+    private ?string $description = null;
 
     public function __construct()
     {
@@ -144,6 +157,18 @@ class Job
               $agent->setJob(null);
           }
       }
+
+      return $this;
+  }
+
+  public function getDescription(): ?string
+  {
+      return $this->description;
+  }
+
+  public function setDescription(?string $description): static
+  {
+      $this->description = $description;
 
       return $this;
   }
