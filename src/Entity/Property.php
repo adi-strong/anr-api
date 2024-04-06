@@ -12,6 +12,8 @@ use App\Repository\PropertyRepository;
 use App\Traits\CreatedAtTrait;
 use App\Traits\IsDeletedTrait;
 use App\Traits\UpdatedAtTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -173,6 +175,17 @@ class Property
       'property:read',
     ])]
     private ?string $latitude = null;
+
+    #[ORM\OneToMany(targetEntity: PropertyAssignment::class, mappedBy: 'property')]
+    #[Groups([
+      'property:read',
+    ])]
+    private Collection $propertyAssignments;
+
+    public function __construct()
+    {
+        $this->propertyAssignments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -375,5 +388,35 @@ class Property
   public function onUpdate(): void
   {
     $this->setUpdatedAt(new \DateTime());
+  }
+
+  /**
+   * @return Collection<int, PropertyAssignment>
+   */
+  public function getPropertyAssignments(): Collection
+  {
+      return $this->propertyAssignments;
+  }
+
+  public function addPropertyAssignment(PropertyAssignment $propertyAssignment): static
+  {
+      if (!$this->propertyAssignments->contains($propertyAssignment)) {
+          $this->propertyAssignments->add($propertyAssignment);
+          $propertyAssignment->setProperty($this);
+      }
+
+      return $this;
+  }
+
+  public function removePropertyAssignment(PropertyAssignment $propertyAssignment): static
+  {
+      if ($this->propertyAssignments->removeElement($propertyAssignment)) {
+          // set the owning side to null (unless already changed)
+          if ($propertyAssignment->getProperty() === $this) {
+              $propertyAssignment->setProperty(null);
+          }
+      }
+
+      return $this;
   }
 }

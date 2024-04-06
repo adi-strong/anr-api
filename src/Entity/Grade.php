@@ -42,6 +42,11 @@ class Grade
       'dep:read',
       'assignment:read',
       'salary:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'property:read',
+      'society:read',
     ])]
     private ?int $id = null;
 
@@ -60,6 +65,11 @@ class Grade
       'agent:read',
       'assignment:read',
       'salary:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'property:read',
+      'society:read',
     ])]
     private ?string $name = null;
 

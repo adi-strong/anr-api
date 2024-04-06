@@ -40,6 +40,7 @@ class VehicleType
     #[Groups([
       'v_type:read',
       'vehicle:read',
+      'v_ass:read',
     ])]
     private ?int $id = null;
 
@@ -55,6 +56,7 @@ class VehicleType
     #[Groups([
       'v_type:read',
       'vehicle:read',
+      'v_ass:read',
     ])]
     private ?string $name = null;
 

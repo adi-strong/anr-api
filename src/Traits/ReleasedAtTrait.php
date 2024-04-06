@@ -14,6 +14,12 @@ trait ReleasedAtTrait
     'salary:read',
     'folder:read',
     'med:read',
+    'v_ass:read',
+    'vehicle:read',
+    'p_ass:read',
+    'property:read',
+    'society:read',
+    'society_rec:read',
   ])]
   private ?\DateTimeInterface $releasedAt = null;
 

@@ -62,6 +62,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?int $id = null;
 
@@ -86,6 +90,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $name = null;
 
@@ -108,6 +116,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $firstName = null;
 
@@ -132,6 +144,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $register = null;
 
@@ -148,6 +164,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $cartNumber = null;
 
@@ -172,6 +192,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $pseudo = null;
 
@@ -188,6 +212,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $sex = null;
 
@@ -207,6 +235,11 @@ class Agent
       'salary:read',
       'property:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
+      'society:read',
     ])]
     private ?string $maritalStatus = null;
 
@@ -223,6 +256,11 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
+      'society:read',
     ])]
     private ?\DateTimeInterface $bornAt = null;
 
@@ -240,6 +278,11 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
+      'society:read',
     ])]
     private ?string $email = null;
 
@@ -260,6 +303,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $phone = null;
 
@@ -284,6 +331,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $origin = null;
 
@@ -312,6 +363,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $conjoint = null;
 
@@ -328,6 +383,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?array $children = null;
 
@@ -352,6 +411,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $blood = null;
 
@@ -376,6 +439,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $levelOfStudies = null;
 
@@ -398,6 +465,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $godFather = null;
 
@@ -421,6 +492,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $godFatherNum = null;
 
@@ -429,18 +504,27 @@ class Agent
       'agent:read',
       'assignment:read',
       'salary:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'property:read',
+      'society:read',
     ])]
     private ?Grade $grade = null;
 
     #[ORM\ManyToOne(inversedBy: 'agents')]
     #[Groups([
       'agent:read',
+      'vehicle:read',
+      'v_ass:read',
     ])]
     private ?Department $department = null;
 
     #[ORM\ManyToOne(inversedBy: 'agents')]
     #[Groups([
       'agent:read',
+      'vehicle:read',
+      'v_ass:read',
     ])]
     private ?DepartmentService $service = null;
 
@@ -467,6 +551,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $state = 'active';
 
@@ -474,6 +562,8 @@ class Agent
     #[Groups([
       'agent:read',
       'assignment:read',
+      'vehicle:read',
+      'v_ass:read',
     ])]
     private ?Job $job = null;
 
@@ -496,6 +586,13 @@ class Agent
       'agent:read',
       'assignment:read',
       'salary:read',
+      'vehicle:read',
+      'v_ass:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'property:read',
+      'society:read',
     ])]
     private ?ImageObject $profile = null;
 
@@ -530,6 +627,10 @@ class Agent
       'property:read',
       'refueling:read',
       'society_rec:read',
+      'vehicle:read',
+      'v_ass:read',
+      'p_ass:read',
+      'society:read',
     ])]
     private ?string $conjointOrigin = null;
 
@@ -560,6 +661,15 @@ class Agent
     #[ORM\OneToMany(targetEntity: AgentState::class, mappedBy: 'agent')]
     private Collection $agentStates;
 
+    #[ORM\OneToOne(mappedBy: 'agent')]
+    private ?Vehicle $vehicle = null;
+
+    #[ORM\OneToMany(targetEntity: VehicleAssignment::class, mappedBy: 'agent')]
+    private Collection $vehicleAssignments;
+
+    #[ORM\OneToMany(targetEntity: PropertyAssignment::class, mappedBy: 'agent')]
+    private Collection $propertyAssignments;
+
     public function __construct()
     {
         $this->missions = new ArrayCollection();
@@ -571,6 +681,8 @@ class Agent
         $this->societyRecoveries = new ArrayCollection();
         $this->medicals = new ArrayCollection();
         $this->agentStates = new ArrayCollection();
+        $this->vehicleAssignments = new ArrayCollection();
+        $this->propertyAssignments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -1221,6 +1333,88 @@ class Agent
             // set the owning side to null (unless already changed)
             if ($agentState->getAgent() === $this) {
                 $agentState->setAgent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getVehicle(): ?Vehicle
+    {
+        return $this->vehicle;
+    }
+
+    public function setVehicle(?Vehicle $vehicle): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($vehicle === null && $this->vehicle !== null) {
+            $this->vehicle->setAgent(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($vehicle !== null && $vehicle->getAgent() !== $this) {
+            $vehicle->setAgent($this);
+        }
+
+        $this->vehicle = $vehicle;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, VehicleAssignment>
+     */
+    public function getVehicleAssignments(): Collection
+    {
+        return $this->vehicleAssignments;
+    }
+
+    public function addVehicleAssignment(VehicleAssignment $vehicleAssignment): static
+    {
+        if (!$this->vehicleAssignments->contains($vehicleAssignment)) {
+            $this->vehicleAssignments->add($vehicleAssignment);
+            $vehicleAssignment->setAgent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicleAssignment(VehicleAssignment $vehicleAssignment): static
+    {
+        if ($this->vehicleAssignments->removeElement($vehicleAssignment)) {
+            // set the owning side to null (unless already changed)
+            if ($vehicleAssignment->getAgent() === $this) {
+                $vehicleAssignment->setAgent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PropertyAssignment>
+     */
+    public function getPropertyAssignments(): Collection
+    {
+        return $this->propertyAssignments;
+    }
+
+    public function addPropertyAssignment(PropertyAssignment $propertyAssignment): static
+    {
+        if (!$this->propertyAssignments->contains($propertyAssignment)) {
+            $this->propertyAssignments->add($propertyAssignment);
+            $propertyAssignment->setAgent($this);
+        }
+
+        return $this;
+    }
+
+    public function removePropertyAssignment(PropertyAssignment $propertyAssignment): static
+    {
+        if ($this->propertyAssignments->removeElement($propertyAssignment)) {
+            // set the owning side to null (unless already changed)
+            if ($propertyAssignment->getAgent() === $this) {
+                $propertyAssignment->setAgent(null);
             }
         }
 

@@ -45,4 +45,15 @@ class AssignmentRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+  /**
+   * @return Assignment[]
+   */
+  public function findAssignments(): array
+  {
+    return $this->createQueryBuilder('m')
+      ->join('m.agent', 'a')
+      ->getQuery()
+      ->getResult();
+  }
 }

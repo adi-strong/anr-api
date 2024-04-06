@@ -3,7 +3,9 @@
 namespace App\Controller\Actions\MissionActions;
 
 use App\Entity\DocObject;
+use App\Entity\Expense;
 use App\Entity\Mission;
+use App\Repository\CurrencyRepository;
 use App\Repository\YearRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -16,7 +18,8 @@ final class AddNewMissionAction extends AbstractController
 {
   public function __construct(
     private readonly Security $security,
-    private readonly YearRepository $yearRepository
+    private readonly YearRepository $yearRepository,
+    private readonly CurrencyRepository $currencyRepository
   ) { }
 
   public function __invoke(Mission $mission, Request $request): Mission
@@ -65,6 +68,26 @@ final class AddNewMissionAction extends AbstractController
     $mission
       ->setUser($user)
       ->setCreatedAt($createdAt);
+
+    // New Expense
+    $agent = $mission->getAgent();
+    $name = $agent->getName();
+    $lastName = $agent->getLastName() ?? '';
+    $firstName = $agent->getFirstName() ?? '';
+    $fullName = $name.' '.$lastName.' '.$firstName;
+
+    $currency = $this->currencyRepository->find(1);
+
+    $expense = (new Expense())
+      ->setBearer($fullName)
+      ->setYear($lastSession)
+      ->setObject('Mission : '.$mission->getObject())
+      ->setCurrency($currency->getFirst())
+      ->setRate($currency->getRate())
+      ->setReleasedAt($createdAt)
+      ->setTotal(0);
+    $mission->setExpense($expense);
+    // End New Expense
 
     return $mission;
   }

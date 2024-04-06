@@ -45,4 +45,15 @@ class MissionRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+  /**
+   * @return Mission[]
+   */
+  public function findMissions(): array
+  {
+    return $this->createQueryBuilder('m')
+      ->join('m.agent', 'a')
+      ->getQuery()
+      ->getResult();
+  }
 }

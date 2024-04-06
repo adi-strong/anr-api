@@ -64,6 +64,10 @@ class ImageObject
     'agent:read',
     'assignment:read',
     'salary:read',
+    'vehicle:read',
+    'v_ass:read',
+    'society:read',
+    'society_rec:read',
   ])]
   public ?string $contentUrl = null;
 

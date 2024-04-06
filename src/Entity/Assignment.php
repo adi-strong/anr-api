@@ -80,6 +80,12 @@ class Assignment
     #[Groups(['assignment:read', 'agent:read'])]
     private ?Province $province = null;
 
+    #[ORM\ManyToOne(inversedBy: 'originProvinces')]
+    #[Assert\NotBlank(message: 'Ce champ est requis.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[Groups(['assignment:read', 'agent:read'])]
+    private ?Province $originProvince = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -195,6 +201,18 @@ class Assignment
   public function setProvince(?Province $province): static
   {
       $this->province = $province;
+
+      return $this;
+  }
+
+  public function getOriginProvince(): ?Province
+  {
+      return $this->originProvince;
+  }
+
+  public function setOriginProvince(?Province $originProvince): static
+  {
+      $this->originProvince = $originProvince;
 
       return $this;
   }

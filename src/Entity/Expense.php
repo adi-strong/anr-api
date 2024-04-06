@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Actions\ExpenseActions\AddExpenseAction;
 use App\Repository\ExpenseRepository;
@@ -19,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
   operations: [
     new GetCollection(),
     new Get(),
+    new Patch(),
     new Delete(),
     new Post(controller: AddExpenseAction::class),
   ],
@@ -67,16 +69,14 @@ class Expense
     ])]
     private ?string $bearer = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank(message: 'Les dépenses doivent être renseignées.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
+    #[ORM\Column(nullable: true)]
     #[Groups([
       'exp:read',
       'agent:read',
     ])]
-    private array $operations = [];
+    private ?array $operations = [];
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 6)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Assert\NotBlank(message: 'Le Montant total doit être renseigné.')]
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups([
@@ -151,12 +151,12 @@ class Expense
         return $this;
     }
 
-    public function getOperations(): array
+    public function getOperations(): ?array
     {
         return $this->operations;
     }
 
-    public function setOperations(array $operations): static
+    public function setOperations(?array $operations): static
     {
         $this->operations = $operations;
 

@@ -42,6 +42,7 @@ class SocietyType
       'society:read',
       'province:read',
       'society_rec:read',
+      'society:read',
     ])]
     private ?int $id = null;
 

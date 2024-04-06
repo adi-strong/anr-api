@@ -21,50 +21,52 @@ final class AgentControllerAction extends AbstractController
     $agents = $this->repository->findAgents($keyword);
     if (count($agents) > 0) {
       foreach ($agents as $agent) {
-        $service = $agent?->getService();
-        $department = $agent?->getDepartment();
-        $grade = $agent?->getGrade();
-        $job = $agent?->getJob();
+        if (false === $agent->isIsDeleted()) {
+          $service = $agent?->getService();
+          $department = $agent?->getDepartment();
+          $grade = $agent?->getGrade();
+          $job = $agent?->getJob();
 
-        $data[] = [
-          'id' => $agent->getId(),
-          'name' => $agent->getName(),
-          'lastName' => $agent->getLastName(),
-          'firstName' => $agent->getFirstName(),
-          'sex' => $agent->getSex(),
-          'origin' => $agent->getOrigin(),
-          'maritalStatus' => $agent->getMaritalStatus(),
-          'conjoint' => $agent->getConjoint(),
-          'conjointOrigin' => $agent->getConjointOrigin(),
-          'service' => isset($service) ? [
-            'id' => $service->getId(),
-            'name' => $service->getName(),
-            'slug' => $service->getSlug()
-          ] : null,
+          $data[] = [
+            'id' => $agent->getId(),
+            'name' => $agent->getName(),
+            'lastName' => $agent->getLastName(),
+            'firstName' => $agent->getFirstName(),
+            'sex' => $agent->getSex(),
+            'origin' => $agent->getOrigin(),
+            'maritalStatus' => $agent->getMaritalStatus(),
+            'conjoint' => $agent->getConjoint(),
+            'conjointOrigin' => $agent->getConjointOrigin(),
+            'service' => isset($service) ? [
+              'id' => $service->getId(),
+              'name' => $service->getName(),
+              'slug' => $service->getSlug()
+            ] : null,
 
-          'job' => isset($job) ? [
-            'id' => $job->getId(),
-            'name' => $job->getName(),
-            'slug' => $job->getSlug()
-          ] : null,
+            'job' => isset($job) ? [
+              'id' => $job->getId(),
+              'name' => $job->getName(),
+              'slug' => $job->getSlug()
+            ] : null,
 
-          'grade' => isset($grade) ? [
-            'id' => $grade->getId(),
-            'name' => $grade->getName(),
-            'slug' => $grade->getSlug()
-          ] : null,
-          
-          'department' => isset($department) ? [
-            'id' => $department->getId(),
-            'name' => $department->getName(),
-            'slug' => $department->getSlug()
-          ] : null,
+            'grade' => isset($grade) ? [
+              'id' => $grade->getId(),
+              'name' => $grade->getName(),
+              'slug' => $grade->getSlug()
+            ] : null,
 
-          'phone' => $agent->getPhone(),
-          'email' => $agent->getEmail(),
-          'state' => $agent->getState(),
-          'isDeleted' => $agent->isIsDeleted(),
-        ];
+            'department' => isset($department) ? [
+              'id' => $department->getId(),
+              'name' => $department->getName(),
+              'slug' => $department->getSlug()
+            ] : null,
+
+            'phone' => $agent->getPhone(),
+            'email' => $agent->getEmail(),
+            'state' => $agent->getState(),
+            'isDeleted' => $agent->isIsDeleted(),
+          ];
+        }
       }
     }
 
@@ -78,33 +80,35 @@ final class AgentControllerAction extends AbstractController
     $agents = $this->repository->findAgentsByState('active');
     if (count($agents) > 0) {
       foreach ($agents as $agent) {
-        $thisYear = date('Y');
-        $year = $agent?->getBornAt()->format('Y');
-        $age = null;
+        if (false === $agent->isIsDeleted()) {
+          $thisYear = date('Y');
+          $year = $agent?->getBornAt()->format('Y');
+          $age = null;
 
-        if (null !== $year) {
-          $age = $thisYear - $year;
+          if (null !== $year) {
+            $age = $thisYear - $year;
+          }
+
+          $grade = $agent->getGrade() ? [
+            'id' => $agent->getGrade()->getId(),
+            'name' => $agent->getGrade()->getName()
+          ] : null;
+
+          $profile = $agent->getProfile() ? [
+            'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
+          ] : null;
+
+          $data[] = [
+            'id' => $agent->getId(),
+            'register' => $agent->getRegister(),
+            'age' => $age,
+            'name' => $agent->getName(),
+            'lastName' => $agent->getLastName() ?? null,
+            'firstName' => $agent->getFirstName() ?? null,
+            'grade' => $grade,
+            'profile' => $profile
+          ];
         }
-
-        $grade = $agent->getGrade() ? [
-          'id' => $agent->getGrade()->getId(),
-          'name' => $agent->getGrade()->getName()
-        ] : null;
-
-        $profile = $agent->getProfile() ? [
-          'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
-        ] : null;
-
-        $data[] = [
-          'id' => $agent->getId(),
-          'register' => $agent->getRegister(),
-          'age' => $age,
-          'name' => $agent->getName(),
-          'lastName' => $agent->getLastName() ?? null,
-          'firstName' => $agent->getFirstName() ?? null,
-          'grade' => $grade,
-          'profile' => $profile
-        ];
       }
     }
 
@@ -118,33 +122,35 @@ final class AgentControllerAction extends AbstractController
     $agents = $this->repository->findAgentsByState('inactive');
     if (count($agents) > 0) {
       foreach ($agents as $agent) {
-        $thisYear = date('Y');
-        $year = $agent?->getBornAt()->format('Y');
-        $age = null;
+        if (false === $agent->isIsDeleted()) {
+          $thisYear = date('Y');
+          $year = $agent?->getBornAt()->format('Y');
+          $age = null;
 
-        if (null !== $year) {
-          $age = $thisYear - $year;
+          if (null !== $year) {
+            $age = $thisYear - $year;
+          }
+
+          $grade = $agent->getGrade() ? [
+            'id' => $agent->getGrade()->getId(),
+            'name' => $agent->getGrade()->getName()
+          ] : null;
+
+          $profile = $agent->getProfile() ? [
+            'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
+          ] : null;
+
+          $data[] = [
+            'id' => $agent->getId(),
+            'register' => $agent->getRegister(),
+            'age' => $age,
+            'name' => $agent->getName(),
+            'lastName' => $agent->getLastName() ?? null,
+            'firstName' => $agent->getFirstName() ?? null,
+            'grade' => $grade,
+            'profile' => $profile
+          ];
         }
-
-        $grade = $agent->getGrade() ? [
-          'id' => $agent->getGrade()->getId(),
-          'name' => $agent->getGrade()->getName()
-        ] : null;
-
-        $profile = $agent->getProfile() ? [
-          'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
-        ] : null;
-
-        $data[] = [
-          'id' => $agent->getId(),
-          'register' => $agent->getRegister(),
-          'age' => $age,
-          'name' => $agent->getName(),
-          'lastName' => $agent->getLastName() ?? null,
-          'firstName' => $agent->getFirstName() ?? null,
-          'grade' => $grade,
-          'profile' => $profile
-        ];
       }
     }
 
@@ -158,33 +164,35 @@ final class AgentControllerAction extends AbstractController
     $agents = $this->repository->findAgentsByState('sick');
     if (count($agents) > 0) {
       foreach ($agents as $agent) {
-        $thisYear = date('Y');
-        $year = $agent?->getBornAt()->format('Y');
-        $age = null;
+        if (false === $agent->isIsDeleted()) {
+          $thisYear = date('Y');
+          $year = $agent?->getBornAt()->format('Y');
+          $age = null;
 
-        if (null !== $year) {
-          $age = $thisYear - $year;
+          if (null !== $year) {
+            $age = $thisYear - $year;
+          }
+
+          $grade = $agent->getGrade() ? [
+            'id' => $agent->getGrade()->getId(),
+            'name' => $agent->getGrade()->getName()
+          ] : null;
+
+          $profile = $agent->getProfile() ? [
+            'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
+          ] : null;
+
+          $data[] = [
+            'id' => $agent->getId(),
+            'register' => $agent->getRegister(),
+            'age' => $age,
+            'name' => $agent->getName(),
+            'lastName' => $agent->getLastName() ?? null,
+            'firstName' => $agent->getFirstName() ?? null,
+            'grade' => $grade,
+            'profile' => $profile
+          ];
         }
-
-        $grade = $agent->getGrade() ? [
-          'id' => $agent->getGrade()->getId(),
-          'name' => $agent->getGrade()->getName()
-        ] : null;
-
-        $profile = $agent->getProfile() ? [
-          'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
-        ] : null;
-
-        $data[] = [
-          'id' => $agent->getId(),
-          'register' => $agent->getRegister(),
-          'age' => $age,
-          'name' => $agent->getName(),
-          'lastName' => $agent->getLastName() ?? null,
-          'firstName' => $agent->getFirstName() ?? null,
-          'grade' => $grade,
-          'profile' => $profile
-        ];
       }
     }
 
@@ -198,33 +206,35 @@ final class AgentControllerAction extends AbstractController
     $agents = $this->repository->findAgentsByState('leave');
     if (count($agents) > 0) {
       foreach ($agents as $agent) {
-        $thisYear = date('Y');
-        $year = $agent?->getBornAt()->format('Y');
-        $age = null;
+        if (false === $agent->isIsDeleted()) {
+          $thisYear = date('Y');
+          $year = $agent?->getBornAt()->format('Y');
+          $age = null;
 
-        if (null !== $year) {
-          $age = $thisYear - $year;
+          if (null !== $year) {
+            $age = $thisYear - $year;
+          }
+
+          $grade = $agent->getGrade() ? [
+            'id' => $agent->getGrade()->getId(),
+            'name' => $agent->getGrade()->getName()
+          ] : null;
+
+          $profile = $agent->getProfile() ? [
+            'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
+          ] : null;
+
+          $data[] = [
+            'id' => $agent->getId(),
+            'register' => $agent->getRegister(),
+            'age' => $age,
+            'name' => $agent->getName(),
+            'lastName' => $agent->getLastName() ?? null,
+            'firstName' => $agent->getFirstName() ?? null,
+            'grade' => $grade,
+            'profile' => $profile
+          ];
         }
-
-        $grade = $agent->getGrade() ? [
-          'id' => $agent->getGrade()->getId(),
-          'name' => $agent->getGrade()->getName()
-        ] : null;
-
-        $profile = $agent->getProfile() ? [
-          'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
-        ] : null;
-
-        $data[] = [
-          'id' => $agent->getId(),
-          'register' => $agent->getRegister(),
-          'age' => $age,
-          'name' => $agent->getName(),
-          'lastName' => $agent->getLastName() ?? null,
-          'firstName' => $agent->getFirstName() ?? null,
-          'grade' => $grade,
-          'profile' => $profile
-        ];
       }
     }
 
@@ -238,33 +248,35 @@ final class AgentControllerAction extends AbstractController
     $agents = $this->repository->findAgentsByState('dead');
     if (count($agents) > 0) {
       foreach ($agents as $agent) {
-        $thisYear = date('Y');
-        $year = $agent?->getBornAt()->format('Y');
-        $age = null;
+        if (false === $agent->isIsDeleted()) {
+          $thisYear = date('Y');
+          $year = $agent?->getBornAt()->format('Y');
+          $age = null;
 
-        if (null !== $year) {
-          $age = $thisYear - $year;
+          if (null !== $year) {
+            $age = $thisYear - $year;
+          }
+
+          $grade = $agent->getGrade() ? [
+            'id' => $agent->getGrade()->getId(),
+            'name' => $agent->getGrade()->getName()
+          ] : null;
+
+          $profile = $agent->getProfile() ? [
+            'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
+          ] : null;
+
+          $data[] = [
+            'id' => $agent->getId(),
+            'register' => $agent->getRegister(),
+            'age' => $age,
+            'name' => $agent->getName(),
+            'lastName' => $agent->getLastName() ?? null,
+            'firstName' => $agent->getFirstName() ?? null,
+            'grade' => $grade,
+            'profile' => $profile
+          ];
         }
-
-        $grade = $agent->getGrade() ? [
-          'id' => $agent->getGrade()->getId(),
-          'name' => $agent->getGrade()->getName()
-        ] : null;
-
-        $profile = $agent->getProfile() ? [
-          'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
-        ] : null;
-
-        $data[] = [
-          'id' => $agent->getId(),
-          'register' => $agent->getRegister(),
-          'age' => $age,
-          'name' => $agent->getName(),
-          'lastName' => $agent->getLastName() ?? null,
-          'firstName' => $agent->getFirstName() ?? null,
-          'grade' => $grade,
-          'profile' => $profile
-        ];
       }
     }
 
@@ -278,33 +290,35 @@ final class AgentControllerAction extends AbstractController
     $agents = $this->repository->findAgentsByState('unavailable');
     if (count($agents) > 0) {
       foreach ($agents as $agent) {
-        $thisYear = date('Y');
-        $year = $agent?->getBornAt()->format('Y');
-        $age = null;
+        if (false === $agent->isIsDeleted()) {
+          $thisYear = date('Y');
+          $year = $agent?->getBornAt()->format('Y');
+          $age = null;
 
-        if (null !== $year) {
-          $age = $thisYear - $year;
+          if (null !== $year) {
+            $age = $thisYear - $year;
+          }
+
+          $grade = $agent->getGrade() ? [
+            'id' => $agent->getGrade()->getId(),
+            'name' => $agent->getGrade()->getName()
+          ] : null;
+
+          $profile = $agent->getProfile() ? [
+            'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
+          ] : null;
+
+          $data[] = [
+            'id' => $agent->getId(),
+            'register' => $agent->getRegister(),
+            'age' => $age,
+            'name' => $agent->getName(),
+            'lastName' => $agent->getLastName() ?? null,
+            'firstName' => $agent->getFirstName() ?? null,
+            'grade' => $grade,
+            'profile' => $profile
+          ];
         }
-
-        $grade = $agent->getGrade() ? [
-          'id' => $agent->getGrade()->getId(),
-          'name' => $agent->getGrade()->getName()
-        ] : null;
-
-        $profile = $agent->getProfile() ? [
-          'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
-        ] : null;
-
-        $data[] = [
-          'id' => $agent->getId(),
-          'register' => $agent->getRegister(),
-          'age' => $age,
-          'name' => $agent->getName(),
-          'lastName' => $agent->getLastName() ?? null,
-          'firstName' => $agent->getFirstName() ?? null,
-          'grade' => $grade,
-          'profile' => $profile
-        ];
       }
     }
 
@@ -318,33 +332,79 @@ final class AgentControllerAction extends AbstractController
     $agents = $this->repository->findAgentsByState('retired');
     if (count($agents) > 0) {
       foreach ($agents as $agent) {
-        $thisYear = date('Y');
-        $year = $agent?->getBornAt()->format('Y');
-        $age = null;
+        if (false === $agent->isIsDeleted()) {
+          $thisYear = date('Y');
+          $year = $agent?->getBornAt()->format('Y');
+          $age = null;
 
-        if (null !== $year) {
-          $age = $thisYear - $year;
+          if (null !== $year) {
+            $age = $thisYear - $year;
+          }
+
+          $grade = $agent->getGrade() ? [
+            'id' => $agent->getGrade()->getId(),
+            'name' => $agent->getGrade()->getName()
+          ] : null;
+
+          $profile = $agent->getProfile() ? [
+            'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
+          ] : null;
+
+          $data[] = [
+            'id' => $agent->getId(),
+            'register' => $agent->getRegister(),
+            'age' => $age,
+            'name' => $agent->getName(),
+            'lastName' => $agent->getLastName() ?? null,
+            'firstName' => $agent->getFirstName() ?? null,
+            'grade' => $grade,
+            'profile' => $profile
+          ];
         }
+      }
+    }
 
-        $grade = $agent->getGrade() ? [
-          'id' => $agent->getGrade()->getId(),
-          'name' => $agent->getGrade()->getName()
-        ] : null;
+    return $this->json($data);
+  }
 
-        $profile = $agent->getProfile() ? [
-          'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
-        ] : null;
+  #[Route('/api/soon_retired_agents', methods: ['GET'])]
+  public function getSoonRetiredAgents(): JsonResponse
+  {
+    $data = [];
+    $agents = $this->repository->findAll();
+    if (count($agents) > 0) {
+      foreach ($agents as $agent) {
+        if (false === $agent->isIsDeleted()) {
+          $thisYear = date('Y');
+          $year = $agent?->getBornAt()->format('Y');
+          $age = null;
 
-        $data[] = [
-          'id' => $agent->getId(),
-          'register' => $agent->getRegister(),
-          'age' => $age,
-          'name' => $agent->getName(),
-          'lastName' => $agent->getLastName() ?? null,
-          'firstName' => $agent->getFirstName() ?? null,
-          'grade' => $grade,
-          'profile' => $profile
-        ];
+          if (null !== $year) {
+            $age = $thisYear - $year;
+          }
+
+          $grade = $agent->getGrade() ? [
+            'id' => $agent->getGrade()->getId(),
+            'name' => $agent->getGrade()->getName()
+          ] : null;
+
+          $profile = $agent->getProfile() ? [
+            'contentUrl' => '/media/img/'.$agent->getProfile()->filePath
+          ] : null;
+
+          if (isset($age) && $age > 50 && $age <= 63) {
+            $data[] = [
+              'id' => $agent->getId(),
+              'register' => $agent->getRegister(),
+              'age' => $age,
+              'name' => $agent->getName(),
+              'lastName' => $agent->getLastName() ?? null,
+              'firstName' => $agent->getFirstName() ?? null,
+              'grade' => $grade,
+              'profile' => $profile
+            ];
+          }
+        }
       }
     }
 

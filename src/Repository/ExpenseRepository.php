@@ -50,7 +50,7 @@ class ExpenseRepository extends ServiceEntityRepository
    * @param string $name
    * @return Expense[]
    */
-  public function findProvinceByName(string $name): array
+  public function findExpenseByName(string $name): array
   {
     $query = $this->createQueryBuilder('p');
     $query
@@ -59,5 +59,35 @@ class ExpenseRepository extends ServiceEntityRepository
       ->orderBy('p.object', 'ASC');
 
     return $query->getQuery()->getResult();
+  }
+
+  /**
+   * @param string $startAt
+   * @param string $endAt
+   * @return Expense[]
+   */
+  public function findExpensesBetweenDates(string $startAt, string $endAt): array
+  {
+    return $this->createQueryBuilder('e')
+      ->andWhere('SUBSTRING(e.releasedAt, 1, 10) BETWEEN :startAt AND :endAt')
+      ->setParameter('startAt', $startAt)
+      ->setParameter('endAt', $endAt)
+      ->orderBy('e.releasedAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+  }
+
+  /**
+   * @param string $date
+   * @return Expense[]
+   */
+  public function findRportByDate(string $date): array
+  {
+    return $this->createQueryBuilder('e')
+      ->andWhere('SUBSTRING(e.releasedAt, 1, 10) = :date')
+      ->setParameter('date', $date)
+      ->orderBy('e.releasedAt', 'DESC')
+      ->getQuery()
+      ->getResult();
   }
 }

@@ -41,6 +41,7 @@ class SocietyRecovery
     #[Groups([
       'society_rec:read',
       'agent:read',
+      'society:read',
     ])]
     private ?int $id = null;
 
@@ -49,6 +50,7 @@ class SocietyRecovery
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups([
       'society_rec:read',
+      'society:read',
     ])]
     private ?Agent $agent = null;
 
@@ -56,6 +58,7 @@ class SocietyRecovery
     #[Groups([
       'society_rec:read',
       'agent:read',
+      'society:read',
     ])]
     private ?SocietyType $type = null;
 
@@ -72,6 +75,7 @@ class SocietyRecovery
     #[Groups([
       'society_rec:read',
       'agent:read',
+      'society:read',
     ])]
     private ?DocObject $certificate = null;
 
@@ -79,6 +83,7 @@ class SocietyRecovery
     #[Groups([
       'society_rec:read',
       'agent:read',
+      'society:read',
     ])]
     private ?DocObject $callingCard = null;
 
@@ -86,6 +91,7 @@ class SocietyRecovery
     #[Groups([
       'society_rec:read',
       'agent:read',
+      'society:read',
     ])]
     private ?DocObject $pv = null;
 
@@ -93,6 +99,7 @@ class SocietyRecovery
     #[Groups([
       'society_rec:read',
       'agent:read',
+      'society:read',
     ])]
     private ?DocObject $form = null;
 
@@ -100,6 +107,7 @@ class SocietyRecovery
     #[Groups([
       'society_rec:read',
       'agent:read',
+      'society:read',
     ])]
     private ?DocObject $expenseReport = null;
 
@@ -107,6 +115,7 @@ class SocietyRecovery
     #[Groups([
       'society_rec:read',
       'agent:read',
+      'society:read',
     ])]
     private ?DocObject $proofOfPayment = null;
 
@@ -131,6 +140,7 @@ class SocietyRecovery
   #[Assert\NotBlank(message: 'Ce champs doit être renseigné.')]
   #[Groups([
     'society_rec:read',
+    'society:read',
   ])]
   private ?Province $province = null;
 

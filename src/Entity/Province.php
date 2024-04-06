@@ -49,6 +49,7 @@ class Province
       'society:read',
       'society_rec:read',
       'assignment:read',
+      'society:read',
     ])]
     private ?int $id = null;
 
@@ -68,6 +69,7 @@ class Province
       'society:read',
       'society_rec:read',
       'assignment:read',
+      'society:read',
     ])]
     private ?string $name = null;
 
@@ -90,6 +92,9 @@ class Province
     #[ORM\OneToMany(targetEntity: SocietyRecovery::class, mappedBy: 'province')]
     private Collection $societyRecoveries;
 
+    #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'originProvince')]
+    private Collection $originProvinces;
+
     public function __construct()
     {
         $this->agents = new ArrayCollection();
@@ -97,6 +102,7 @@ class Province
         $this->properties = new ArrayCollection();
         $this->societies = new ArrayCollection();
         $this->societyRecoveries = new ArrayCollection();
+        $this->originProvinces = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -272,6 +278,36 @@ class Province
           // set the owning side to null (unless already changed)
           if ($societyRecovery->getProvince() === $this) {
               $societyRecovery->setProvince(null);
+          }
+      }
+
+      return $this;
+  }
+
+  /**
+   * @return Collection<int, Assignment>
+   */
+  public function getOriginProvinces(): Collection
+  {
+      return $this->originProvinces;
+  }
+
+  public function addOriginProvince(Assignment $originProvince): static
+  {
+      if (!$this->originProvinces->contains($originProvince)) {
+          $this->originProvinces->add($originProvince);
+          $originProvince->setOriginProvince($this);
+      }
+
+      return $this;
+  }
+
+  public function removeOriginProvince(Assignment $originProvince): static
+  {
+      if ($this->originProvinces->removeElement($originProvince)) {
+          // set the owning side to null (unless already changed)
+          if ($originProvince->getOriginProvince() === $this) {
+              $originProvince->setOriginProvince(null);
           }
       }
 

@@ -45,4 +45,38 @@ class SocietyRecoveryRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+  /**
+   * @param mixed $date
+   * @return SocietyRecovery[]
+   */
+  public function findRecoveryByDate(string $date): array
+  {
+    return $this->createQueryBuilder('r')
+      ->join('r.society', 's')
+      ->join('r.agent', 'a')
+      ->andWhere('SUBSTRING(r.releasedAt, 1, 10) = :date')
+      ->setParameter('date', $date)
+      ->orderBy('r.releasedAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+  }
+
+  /**
+   * @param string $startAt
+   * @param string $endAt
+   * @return SocietyRecovery[]
+   */
+  public function findRecoveriesBetweenDates(string $startAt, string $endAt): array
+  {
+    return $this->createQueryBuilder('r')
+      ->join('r.society', 's')
+      ->join('r.agent', 'a')
+      ->andWhere('SUBSTRING(r.releasedAt, 1, 10) BETWEEN :startAt AND :endAt')
+      ->setParameter('startAt', $startAt)
+      ->setParameter('endAt', $endAt)
+      ->orderBy('r.releasedAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+  }
 }

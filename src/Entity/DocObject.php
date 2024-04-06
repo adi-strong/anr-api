@@ -68,6 +68,11 @@ class DocObject
     'society:read',
     'province:read',
     'vehicle:read',
+    'v_ass:read',
+    'p_ass:read',
+    'property:read',
+    'society:read',
+    'society_rec:read',
   ])]
   public ?string $contentUrl = null;
 
@@ -119,6 +124,12 @@ class DocObject
 
   #[ORM\OneToOne(mappedBy: 'doc')]
   private ?AgentState $agentState = null;
+
+  #[ORM\OneToOne(mappedBy: 'docObject', cascade: ['persist', 'remove'])]
+  private ?VehicleAssignment $agent = null;
+
+  #[ORM\OneToOne(mappedBy: 'docObject')]
+  private ?PropertyAssignment $propertyAssignment = null;
 
     public function getId(): ?int
     {
@@ -363,6 +374,50 @@ class DocObject
         }
 
         $this->agentState = $agentState;
+
+        return $this;
+    }
+
+    public function getAgent(): ?VehicleAssignment
+    {
+        return $this->agent;
+    }
+
+    public function setAgent(?VehicleAssignment $agent): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($agent === null && $this->agent !== null) {
+            $this->agent->setDocObject(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($agent !== null && $agent->getDocObject() !== $this) {
+            $agent->setDocObject($this);
+        }
+
+        $this->agent = $agent;
+
+        return $this;
+    }
+
+    public function getPropertyAssignment(): ?PropertyAssignment
+    {
+        return $this->propertyAssignment;
+    }
+
+    public function setPropertyAssignment(?PropertyAssignment $propertyAssignment): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($propertyAssignment === null && $this->propertyAssignment !== null) {
+            $this->propertyAssignment->setDocObject(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($propertyAssignment !== null && $propertyAssignment->getDocObject() !== $this) {
+            $propertyAssignment->setDocObject($this);
+        }
+
+        $this->propertyAssignment = $propertyAssignment;
 
         return $this;
     }

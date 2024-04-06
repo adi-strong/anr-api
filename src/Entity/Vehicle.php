@@ -13,6 +13,8 @@ use App\Controller\Actions\VehicleActions\AddNewVehicleAction;
 use App\Repository\VehicleRepository;
 use App\Traits\CreatedAtTrait;
 use App\Traits\IsDeletedTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Faker\Core\File;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -44,6 +46,7 @@ class Vehicle
     #[Groups([
       'vehicle:read',
       'refueling:read',
+      'v_ass:read',
     ])]
     private ?int $id = null;
 
@@ -59,6 +62,7 @@ class Vehicle
     #[Groups([
       'vehicle:read',
       'refueling:read',
+      'v_ass:read',
     ])]
     private ?string $brand = null;
 
@@ -66,6 +70,7 @@ class Vehicle
     #[Groups([
       'vehicle:read',
       'refueling:read',
+      'v_ass:read',
     ])]
     private ?string $chassis = null;
 
@@ -73,6 +78,7 @@ class Vehicle
     #[Groups([
       'vehicle:read',
       'refueling:read',
+      'v_ass:read',
     ])]
     private ?string $color = null;
 
@@ -88,12 +94,14 @@ class Vehicle
     #[Groups([
       'vehicle:read',
       'refueling:read',
+      'v_ass:read',
     ])]
     private ?string $numberplate = null;
 
     #[ORM\OneToOne(inversedBy: 'vehicle', cascade: ['persist', 'remove'])]
     #[Groups([
       'vehicle:read',
+      'v_ass:read',
     ])]
     private ?DocObject $certificate = null;
 
@@ -104,11 +112,29 @@ class Vehicle
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups([
       'vehicle:read',
+      'v_ass:read',
     ])]
     private ?VehicleType $type = null;
 
     #[ORM\OneToOne(mappedBy: 'vehicle')]
     private ?Refueling $refueling = null;
+
+    #[ORM\OneToOne(inversedBy: 'vehicle')]
+    #[Groups([
+      'vehicle:read',
+    ])]
+    private ?Agent $agent = null;
+
+    #[ORM\OneToMany(targetEntity: VehicleAssignment::class, mappedBy: 'vehicle')]
+    #[Groups([
+      'vehicle:read',
+    ])]
+    private Collection $vehicleAssignments;
+
+    public function __construct()
+    {
+        $this->vehicleAssignments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -205,6 +231,48 @@ class Vehicle
         }
 
         $this->refueling = $refueling;
+
+        return $this;
+    }
+
+    public function getAgent(): ?Agent
+    {
+        return $this->agent;
+    }
+
+    public function setAgent(?Agent $agent): static
+    {
+        $this->agent = $agent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, VehicleAssignment>
+     */
+    public function getVehicleAssignments(): Collection
+    {
+        return $this->vehicleAssignments;
+    }
+
+    public function addVehicleAssignment(VehicleAssignment $vehicleAssignment): static
+    {
+        if (!$this->vehicleAssignments->contains($vehicleAssignment)) {
+            $this->vehicleAssignments->add($vehicleAssignment);
+            $vehicleAssignment->setVehicle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVehicleAssignment(VehicleAssignment $vehicleAssignment): static
+    {
+        if ($this->vehicleAssignments->removeElement($vehicleAssignment)) {
+            // set the owning side to null (unless already changed)
+            if ($vehicleAssignment->getVehicle() === $this) {
+                $vehicleAssignment->setVehicle(null);
+            }
+        }
 
         return $this;
     }

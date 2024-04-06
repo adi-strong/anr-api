@@ -87,6 +87,7 @@ class Society
     #[Groups([
       'society:read',
       'province:read',
+      'society_rec:read',
     ])]
     private ?DocObject $rccm = null;
 
@@ -108,10 +109,14 @@ class Society
     #[Groups([
       'society:read',
       'province:read',
+      'society_rec:read',
     ])]
     private ?string $address = null;
 
     #[ORM\OneToMany(targetEntity: SocietyRecovery::class, mappedBy: 'society')]
+    #[Groups([
+      'society:read',
+    ])]
     private Collection $societyRecoveries;
 
     #[ORM\Column(length: 255, nullable: true)]

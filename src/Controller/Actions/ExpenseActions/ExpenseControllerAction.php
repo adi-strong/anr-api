@@ -18,7 +18,7 @@ final class ExpenseControllerAction extends  AbstractController
   {
     $data = [];
 
-    $expenses = $this->repository->findProvinceByName($name);
+    $expenses = $this->repository->findExpenseByName($name);
     if (count($expenses) > 0) {
       foreach ($expenses as $expense) {
         $data[] = [

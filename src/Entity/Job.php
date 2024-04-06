@@ -41,6 +41,8 @@ class Job
       'dep:read',
       'agent:read',
       'assignment:read',
+      'vehicle:read',
+      'v_ass:read',
     ])]
     private ?int $id = null;
 
@@ -59,6 +61,8 @@ class Job
       'dep:read',
       'agent:read',
       'assignment:read',
+      'vehicle:read',
+      'v_ass:read',
     ])]
     private ?string $name = null;
 

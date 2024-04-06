@@ -18,6 +18,10 @@ trait IsDeletedTrait
     'fuel:read',
     'society:read',
     'province:read',
+    'vehicle:read',
+    'v_ass:read',
+    'p_ass:read',
+    'property:read',
   ])]
   private ?bool $isDeleted = false;
 

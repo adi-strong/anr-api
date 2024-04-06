@@ -32,13 +32,15 @@ final class AddNewAssignmentAction extends AbstractController
     }
 
     $agent = $assignment->getAgent();
-    $agent
-      ->setProvince($assignment->getProvince())
-      ->setDepartment($assignment->getDestination());
 
     $assignment
       ->setPaths($paths)
-      ->setOrigin($agent->getDepartment());
+      ->setOrigin($agent->getDepartment())
+      ->setOriginProvince($agent->getProvince());
+
+    $agent
+      ->setProvince($assignment->getProvince())
+      ->setDepartment($assignment->getDestination());
 
     $this->em->flush();
 
