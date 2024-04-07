@@ -69,6 +69,8 @@ class ImageObject
     'society:read',
     'society_rec:read',
     'user:read',
+    'serv:read',
+    'grade:read',
   ])]
   public ?string $contentUrl = null;
 

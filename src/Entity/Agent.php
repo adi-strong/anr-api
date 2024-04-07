@@ -529,6 +529,7 @@ class Agent
       'property:read',
       'society:read',
       'user:read',
+      'serv:read',
     ])]
     private ?Grade $grade = null;
 
@@ -547,6 +548,7 @@ class Agent
       'vehicle:read',
       'v_ass:read',
       'user:read',
+      'grade:read',
     ])]
     private ?DepartmentService $service = null;
 
@@ -618,6 +620,8 @@ class Agent
       'property:read',
       'society:read',
       'user:read',
+      'serv:read',
+      'grade:read',
     ])]
     private ?ImageObject $profile = null;
 

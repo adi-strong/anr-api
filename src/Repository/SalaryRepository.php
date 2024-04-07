@@ -45,4 +45,22 @@ class SalaryRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+  /**
+   * @param int $yearId
+   * @param string $month
+   * @return Salary[]
+   */
+  public function findSalaries(int $yearId, string $month): array
+  {
+    return $this->createQueryBuilder('s')
+      ->join('s.year', 'y')
+      ->where('y.id = :y_id')
+      ->andWhere('s.month = :month')
+      ->setParameter('y_id', $yearId)
+      ->setParameter('month', $month)
+      ->orderBy('s.releasedAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+  }
 }

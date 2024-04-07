@@ -38,7 +38,7 @@ class Salary
     ])]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2)]
     #[Assert\NotBlank(message: 'Le Montant de base est requis.')]
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Groups([
@@ -47,14 +47,14 @@ class Salary
     ])]
     private ?string $baseAmount = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2, nullable: true)]
     #[Groups([
       'salary:read',
       'agent:read',
     ])]
     private ?string $riskPremiumAmount = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2, nullable: true)]
     #[Groups([
       'salary:read',
       'agent:read',
@@ -89,7 +89,7 @@ class Salary
     ])]
     private ?string $month = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 20, scale: 2, nullable: true)]
     #[Groups([
       'salary:read',
       'agent:read',
