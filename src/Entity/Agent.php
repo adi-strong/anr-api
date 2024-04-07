@@ -66,6 +66,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?int $id = null;
 
@@ -94,12 +95,14 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups([
       'agent:read',
+      'user:read',
     ])]
     private ?string $lastName = null;
 
@@ -120,6 +123,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $firstName = null;
 
@@ -148,6 +152,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $register = null;
 
@@ -168,6 +173,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $cartNumber = null;
 
@@ -196,6 +202,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $pseudo = null;
 
@@ -216,6 +223,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $sex = null;
 
@@ -240,6 +248,7 @@ class Agent
       'p_ass:read',
       'society:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $maritalStatus = null;
 
@@ -261,6 +270,7 @@ class Agent
       'p_ass:read',
       'society:read',
       'society:read',
+      'user:read',
     ])]
     private ?\DateTimeInterface $bornAt = null;
 
@@ -283,6 +293,7 @@ class Agent
       'p_ass:read',
       'society:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $email = null;
 
@@ -307,6 +318,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $phone = null;
 
@@ -335,6 +347,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $origin = null;
 
@@ -367,6 +380,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $conjoint = null;
 
@@ -387,6 +401,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?array $children = null;
 
@@ -415,6 +430,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $blood = null;
 
@@ -443,6 +459,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $levelOfStudies = null;
 
@@ -469,6 +486,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $godFather = null;
 
@@ -496,6 +514,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $godFatherNum = null;
 
@@ -509,6 +528,7 @@ class Agent
       'p_ass:read',
       'property:read',
       'society:read',
+      'user:read',
     ])]
     private ?Grade $grade = null;
 
@@ -517,6 +537,7 @@ class Agent
       'agent:read',
       'vehicle:read',
       'v_ass:read',
+      'user:read',
     ])]
     private ?Department $department = null;
 
@@ -525,6 +546,7 @@ class Agent
       'agent:read',
       'vehicle:read',
       'v_ass:read',
+      'user:read',
     ])]
     private ?DepartmentService $service = null;
 
@@ -555,6 +577,7 @@ class Agent
       'v_ass:read',
       'p_ass:read',
       'society:read',
+      'user:read',
     ])]
     private ?string $state = 'active';
 
@@ -564,6 +587,7 @@ class Agent
       'assignment:read',
       'vehicle:read',
       'v_ass:read',
+      'user:read',
     ])]
     private ?Job $job = null;
 
@@ -593,6 +617,7 @@ class Agent
       'p_ass:read',
       'property:read',
       'society:read',
+      'user:read',
     ])]
     private ?ImageObject $profile = null;
 
@@ -669,6 +694,19 @@ class Agent
 
     #[ORM\OneToMany(targetEntity: PropertyAssignment::class, mappedBy: 'agent')]
     private Collection $propertyAssignments;
+
+    #[ORM\OneToOne(mappedBy: 'agentAccount')]
+    #[Groups([
+      'agent:read',
+    ])]
+    private ?User $account = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups([
+      'agent:read',
+      'user:read',
+    ])]
+    private ?string $address = null;
 
     public function __construct()
     {
@@ -1417,6 +1455,40 @@ class Agent
                 $propertyAssignment->setAgent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAccount(): ?User
+    {
+        return $this->account;
+    }
+
+    public function setAccount(?User $account): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($account === null && $this->account !== null) {
+            $this->account->setAgentAccount(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($account !== null && $account->getAgentAccount() !== $this) {
+            $account->setAgentAccount($this);
+        }
+
+        $this->account = $account;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }

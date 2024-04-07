@@ -62,4 +62,21 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+  /**
+   * @param mixed $keyword
+   * @return User[]
+   */
+  public function findUsers(mixed $keyword): array
+  {
+    $qb = $this->createQueryBuilder('u');
+    $qb->where(
+      $qb->expr()->orX(
+        $qb->expr()->like('u.username', ':keyword'),
+        $qb->expr()->like('u.fullName', ':keyword')
+      )
+    )->setParameter('keyword', '%'.$keyword.'%');
+
+    return $qb->getQuery()->getResult();
+  }
 }

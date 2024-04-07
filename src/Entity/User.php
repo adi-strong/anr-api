@@ -7,6 +7,9 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\Controller\Actions\UserActions\CreateNewUserAction;
+use App\Controller\Actions\UserActions\ResetUserPasswordAction;
+use App\Controller\Actions\UserActions\UpdateUserAction;
 use App\Repository\UserRepository;
 use App\Traits\CreatedAtTrait;
 use App\Traits\IsDeletedTrait;
@@ -24,8 +27,13 @@ use Symfony\Component\Validator\Constraints as Assert;
   operations: [
     new GetCollection(),
     new Get(),
-    new Patch(),
-    new Post(),
+    new Patch(controller: UpdateUserAction::class),
+    new Patch(
+      uriTemplate: '/users/{id}/reset_password',
+      requirements: ['id' => '\d+'],
+      controller: ResetUserPasswordAction::class
+    ),
+    new Post(controller: CreateNewUserAction::class),
   ],
   normalizationContext: ['groups' => ['user:read']],
   order: ['id' => 'desc'],
@@ -33,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
-#[UniqueEntity('email', message: 'Cette adresse Email est déjà prise.')]
+#[UniqueEntity('username', message: 'Ce nom d\'utilisateur est déjà pris.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
   use CreatedAtTrait, IsDeletedTrait;
@@ -83,7 +91,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Assert\Length(
       min: 4,
-      max: 12,
+      max: 255,
       minMessage: 'Ce champ doit faire au moins {{ limit }} caractères.',
       maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.'
     )]
@@ -106,15 +114,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     ])]
     private ?string $fullName = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Email(message: 'Adresse Email invalide.')]
-    #[Assert\NotBlank(message: 'Le Mot de passe doit être renseigné.')]
-    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Assert\Length(max: 255, maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.')]
     #[Groups(['user:read',])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank(message: 'Ce champ doit être renseigné.')]
+    #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Assert\Regex('#^\+?\d(?:[\s.-]?\d{2,3}){3,}$#', message: 'N° de Téléphone invalide.')]
     #[Assert\Length(max: 255, maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.')]
     #[Groups(['user:read',])]
@@ -138,6 +146,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(targetEntity: Mission::class, mappedBy: 'user')]
     private Collection $missions;
+
+    #[ORM\OneToOne(inversedBy: 'account')]
+    #[Groups(['user:read',])]
+    private ?Agent $agentAccount = null;
 
     public function __construct()
     {
@@ -239,7 +251,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(?string $email): static
     {
         $this->email = $email;
 
@@ -275,7 +287,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->author;
     }
 
-    public function setAuthor(?self $author): static
+    public function setAuthor(?UserInterface $author): static
     {
         $this->author = $author;
 
@@ -398,6 +410,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $mission->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAgentAccount(): ?Agent
+    {
+        return $this->agentAccount;
+    }
+
+    public function setAgentAccount(?Agent $agentAccount): static
+    {
+        $this->agentAccount = $agentAccount;
 
         return $this;
     }

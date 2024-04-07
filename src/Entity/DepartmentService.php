@@ -48,6 +48,7 @@ class DepartmentService
       'vehicle:read',
       'v_ass:read',
       'job:read',
+      'user:read',
     ])]
     private ?int $id = null;
 
@@ -68,6 +69,7 @@ class DepartmentService
       'vehicle:read',
       'v_ass:read',
       'job:read',
+      'user:read',
     ])]
     private ?string $name = null;
 

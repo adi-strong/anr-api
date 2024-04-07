@@ -49,6 +49,7 @@ class Job
       'assignment:read',
       'vehicle:read',
       'v_ass:read',
+      'user:read',
     ])]
     private ?int $id = null;
 
@@ -69,6 +70,7 @@ class Job
       'assignment:read',
       'vehicle:read',
       'v_ass:read',
+      'user:read',
     ])]
     private ?string $name = null;
 
@@ -82,7 +84,7 @@ class Job
     private Collection $agents;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['job:read',])]
+    #[Groups(['job:read', 'user:read',])]
     private ?string $description = null;
 
     public function __construct()
