@@ -56,8 +56,8 @@ final class StatsControllerActions extends AbstractController
     }
 
     $data = [
-      'others' => number_format($others, 2),
-      'missions' => number_format($missions, 2),
+      'others' => $others,
+      'missions' => $missions,
       'currency' => [
         'code' => $lastCurrency->getLast()['code'],
         'symbol' => $lastCurrency->getLast()['symbol'],
@@ -98,8 +98,8 @@ final class StatsControllerActions extends AbstractController
     }
 
     $data = [
-      'others' => number_format($others, 2),
-      'missions' => number_format($missions, 2),
+      'others' => $others,
+      'missions' => $missions,
       'currency' => [
         'code' => $lastCurrency->getLast()['code'],
         'symbol' => $lastCurrency->getLast()['symbol'],
@@ -142,8 +142,8 @@ final class StatsControllerActions extends AbstractController
     }
 
     $data = [
-      'others' => number_format($others, 2),
-      'missions' => number_format($missions, 2),
+      'others' => $others,
+      'missions' => $missions,
       'currency' => [
         'code' => $lastCurrency->getLast()['code'],
         'symbol' => $lastCurrency->getLast()['symbol'],
@@ -356,20 +356,20 @@ final class StatsControllerActions extends AbstractController
       [
         'name'=> 'Carburant',
         'data' => [
-          number_format($janFuelStats, 2), number_format($febFuelStats, 2), number_format($marFuelStats, 2),
-          number_format($aprFuelStats, 2), number_format($mayFuelStats, 2), number_format($junFuelStats, 2),
-          number_format($julFuelStats, 2), number_format($augFuelStats, 2), number_format($sepFuelStats, 2),
-          number_format($octFuelStats, 2), number_format($novFuelStats, 2), number_format($decFuelStats, 2),
+          $janFuelStats, $febFuelStats, $marFuelStats,
+          $aprFuelStats, $mayFuelStats, $junFuelStats,
+          $julFuelStats, $augFuelStats, $sepFuelStats,
+          $octFuelStats, $novFuelStats, $decFuelStats,
         ]
       ],
 
       [
         'name'=> 'Dépenses',
         'data' => [
-          number_format($janExpensesSum, 2), number_format($febExpensesSum, 2), number_format($mayExpensesSum, 2),
-          number_format($aprExpensesSum, 2), number_format($mayExpensesSum, 2), number_format($junExpensesSum, 2),
-          number_format($julExpensesSum, 2), number_format($augExpensesSum, 2), number_format($sepExpensesSum, 2),
-          number_format($octExpensesSum, 2), number_format($novExpensesSum, 2), number_format($decExpensesSum, 2),
+          $janExpensesSum, $febExpensesSum, $mayExpensesSum,
+          $aprExpensesSum, $mayExpensesSum, $junExpensesSum,
+          $julExpensesSum, $augExpensesSum, $sepExpensesSum,
+          $octExpensesSum, $novExpensesSum, $decExpensesSum,
         ]
       ],
 

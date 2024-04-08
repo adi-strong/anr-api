@@ -50,6 +50,7 @@ class Job
       'vehicle:read',
       'v_ass:read',
       'user:read',
+      'med:read',
     ])]
     private ?int $id = null;
 
@@ -71,6 +72,7 @@ class Job
       'vehicle:read',
       'v_ass:read',
       'user:read',
+      'med:read',
     ])]
     private ?string $name = null;
 

@@ -29,9 +29,9 @@ class AppFixtures extends Fixture
       ->setPassword('root')
       ->setRoles(['ROLE_SUPER_ADMIN'])
       ->setUsername('root')
-      ->setEmail($faker->email)
-      ->setPhone($faker->phoneNumber)
-      ->setFullName($faker->name)
+      ->setEmail('adi.life91@gmail.com')
+      ->setPhone('+243 891 759 667')
+      ->setFullName('rook')
       ->setCreatedAt(new \DateTime());
 
     $rootPassword = $this->encoder->hashPassword($root, $root->getPassword());
@@ -63,20 +63,38 @@ class AppFixtures extends Fixture
     $manager->persist($currency);
     // End Currency
 
-    /*for ($d=0; $d < 10; $d++) {
-      $department = (new Department())->setName($faker->text(30));
-      $department->setSlug((new Slugify())->slugify($department->getName()));
-      $manager->persist($department);
-    }
-
-    for ($p=0; $p < 20; $p++) {
-      $provinceName = $faker->city;
-      $provinceSlug = (new Slugify())->slugify($provinceName);
-      $province = (new Province())
-        ->setName($provinceName)
-        ->setSlug($provinceSlug);
+    $provinces = ['Kinshasa', 'Kongo-central', 'Haut-Katanga'];
+    foreach ($provinces as $str) {
+      $province = (new Province())->setName($str);
       $manager->persist($province);
-    }*/
+
+      for ($a=0; $a < mt_rand(1, 5); $a++) {
+        $agent = (new Agent())
+          ->setName($faker->name)
+          ->setLastName($faker->lastName)
+          ->setFirstName($faker->firstName)
+          ->setSex($faker->randomElement(['H', 'F']))
+          ->setPhone($faker->phoneNumber)
+          ->setState('active')
+          ->setProvince($province)
+          ->setOrigin($faker->randomElement(['Équateur', 'Kasaï', 'Est']))
+          ->setGodFather($faker->name)
+          ->setRegister($faker->randomDigit())
+          ->setBornAt($faker->dateTimeBetween('-60 years', '-30 years'))
+          ->setLevelOfStudies($faker->randomElement(['D6', 'Gradué(e)', 'Licencié(e)', 'Doctorant']))
+          ->setCartNumber($faker->randomDigit())
+          ->setPseudo($faker->userName)
+          ->setBlood($faker->randomElement(['O', 'A', 'OB', 'B']))
+          ->setMaritalStatus('single')
+          ->setBornPlace($faker->city)
+          ->setEmail($faker->email)
+          ->setGodFatherNum($faker->phoneNumber)
+          ->setAddress($faker->address)
+          ->setFather($faker->firstNameMale)
+          ->setMother($faker->firstNameFemale);
+        $manager->persist($agent);
+      }
+    }
 
     // ***********************************************************************************************
 

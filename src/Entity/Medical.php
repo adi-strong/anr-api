@@ -70,6 +70,9 @@ class Medical
     private ?DocObject $docObject = null;
 
     #[ORM\ManyToOne(inversedBy: 'medicals')]
+    #[Groups([
+      'med:read',
+    ])]
     private ?Agent $agent = null;
 
     public function getId(): ?int

@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\Actions\PropertyActions\AddNewPropertyAction;
+use App\Controller\Actions\PropertyActions\UpdatePropertyAction;
 use App\Repository\PropertyRepository;
 use App\Traits\CreatedAtTrait;
 use App\Traits\IsDeletedTrait;
@@ -25,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
   operations: [
     new GetCollection(),
     new Get(),
-    new Patch(),
+    new Patch(controller: UpdatePropertyAction::class),
     new Post(
       inputFormats: ['multipart' => ['multipart/form-data']],
       controller: AddNewPropertyAction::class

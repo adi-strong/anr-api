@@ -67,6 +67,7 @@ class Agent
       'p_ass:read',
       'society:read',
       'user:read',
+      'med:read',
     ])]
     private ?int $id = null;
 
@@ -96,6 +97,7 @@ class Agent
       'p_ass:read',
       'society:read',
       'user:read',
+      'med:read',
     ])]
     private ?string $name = null;
 
@@ -103,6 +105,9 @@ class Agent
     #[Groups([
       'agent:read',
       'user:read',
+      'mission:read',
+      'assignment:read',
+      'med:read',
     ])]
     private ?string $lastName = null;
 
@@ -124,6 +129,7 @@ class Agent
       'p_ass:read',
       'society:read',
       'user:read',
+      'med:read',
     ])]
     private ?string $firstName = null;
 
@@ -530,6 +536,7 @@ class Agent
       'society:read',
       'user:read',
       'serv:read',
+      'med:read',
     ])]
     private ?Grade $grade = null;
 
@@ -590,6 +597,7 @@ class Agent
       'vehicle:read',
       'v_ass:read',
       'user:read',
+      'med:read',
     ])]
     private ?Job $job = null;
 

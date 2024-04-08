@@ -36,6 +36,7 @@ class Expense
     #[Groups([
       'exp:read',
       'agent:read',
+      'mission:read',
     ])]
     private ?int $id = null;
 
@@ -51,6 +52,7 @@ class Expense
     #[Groups([
       'exp:read',
       'agent:read',
+      'mission:read',
     ])]
     private ?string $object = null;
 
@@ -66,6 +68,7 @@ class Expense
     #[Groups([
       'exp:read',
       'agent:read',
+      'mission:read',
     ])]
     private ?string $bearer = null;
 
@@ -73,6 +76,7 @@ class Expense
     #[Groups([
       'exp:read',
       'agent:read',
+      'mission:read',
     ])]
     private ?array $operations = [];
 
@@ -82,6 +86,7 @@ class Expense
     #[Groups([
       'exp:read',
       'agent:read',
+      'mission:read',
     ])]
     private ?string $total = null;
 
@@ -91,6 +96,7 @@ class Expense
     #[Groups([
       'exp:read',
       'agent:read',
+      'mission:read',
     ])]
     private array $currency = [];
 
@@ -100,6 +106,7 @@ class Expense
     #[Groups([
       'exp:read',
       'agent:read',
+      'mission:read',
     ])]
     private ?string $rate = null;
 
@@ -107,6 +114,7 @@ class Expense
     #[Groups([
       'exp:read',
       'agent:read',
+      'mission:read',
     ])]
     private ?\DateTimeInterface $releasedAt = null;
 

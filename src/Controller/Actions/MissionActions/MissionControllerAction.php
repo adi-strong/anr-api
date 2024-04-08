@@ -78,7 +78,8 @@ final class MissionControllerAction extends AbstractController
             'lastName' => $agent->getLastName() ?? null,
             'firstName' => $agent->getFirstName() ?? null,
             'grade' => $grade,
-            'profile' => $profile
+            'profile' => $profile,
+            'mission' => $mission->getId(),
           ];
         }
       }
@@ -126,7 +127,8 @@ final class MissionControllerAction extends AbstractController
             'lastName' => $agent->getLastName() ?? null,
             'firstName' => $agent->getFirstName() ?? null,
             'grade' => $grade,
-            'profile' => $profile
+            'profile' => $profile,
+            'mission' => $mission->getId(),
           ];
         }
       }

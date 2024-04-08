@@ -202,16 +202,10 @@ class Mission
 
   /* --------------------------------------- FILES TO UPLOAD ----------------------------------------------- */
 
-  #[Assert\NotBlank(message: 'La Feuille de route doit être renseignée.')]
-  #[Assert\NotNull(message: 'Ce Champ doit être renseignée.')]
   public ?File $roadmapFile = null;
 
-  #[Assert\NotBlank(message: 'La Permission de sortie doit être renseignée.')]
-  #[Assert\NotNull(message: 'Ce Champ doit être renseignée.')]
   public ?File $exitPermitFile = null;
 
-  #[Assert\NotBlank(message: 'L\'Ordre de mission doit être renseignée.')]
-  #[Assert\NotNull(message: 'Ce Champ doit être renseignée.')]
   public ?File $missionOrderFile = null;
   /* --------------------------------------- END FILES TO UPLOAD ------------------------------------------- */
 

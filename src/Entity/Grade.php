@@ -49,6 +49,7 @@ class Grade
       'society:read',
       'user:read',
       'serv:read',
+      'med:read',
     ])]
     private ?int $id = null;
 
@@ -74,6 +75,7 @@ class Grade
       'society:read',
       'user:read',
       'serv:read',
+      'med:read',
     ])]
     private ?string $name = null;
 

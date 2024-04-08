@@ -20,6 +20,7 @@ trait ReleasedAtTrait
     'property:read',
     'society:read',
     'society_rec:read',
+    'med:read',
   ])]
   private ?\DateTimeInterface $releasedAt = null;
 

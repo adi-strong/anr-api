@@ -54,7 +54,8 @@ final class AssignmentController extends AbstractController
               'lastName' => $agent->getLastName() ?? null,
               'firstName' => $agent->getFirstName() ?? null,
               'grade' => $grade,
-              'profile' => $profile
+              'profile' => $profile,
+              'assignment' => $assignment->getId(),
             ];
           }
         }
@@ -84,7 +85,8 @@ final class AssignmentController extends AbstractController
             'lastName' => $agent->getLastName() ?? null,
             'firstName' => $agent->getFirstName() ?? null,
             'grade' => $grade,
-            'profile' => $profile
+            'profile' => $profile,
+            'assignment' => $assignment->getId(),
           ];
         }
       }
@@ -134,7 +136,8 @@ final class AssignmentController extends AbstractController
               'lastName' => $agent->getLastName() ?? null,
               'firstName' => $agent->getFirstName() ?? null,
               'grade' => $grade,
-              'profile' => $profile
+              'profile' => $profile,
+              'assignment' => $assignment->getId(),
             ];
           }
         }
@@ -164,7 +167,8 @@ final class AssignmentController extends AbstractController
             'lastName' => $agent->getLastName() ?? null,
             'firstName' => $agent->getFirstName() ?? null,
             'grade' => $grade,
-            'profile' => $profile
+            'profile' => $profile,
+            'assignment' => $assignment->getId(),
           ];
         }
       }
