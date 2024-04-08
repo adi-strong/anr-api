@@ -13,6 +13,32 @@ final class MissionControllerAction extends AbstractController
 {
   public function __construct(private readonly MissionRepository $repository) { }
 
+  #[Route('/api/get_count_missions', methods: ['GET'])]
+  public function getMissions(): JsonResponse
+  {
+    $missions = $this->repository->findThisYearMissions();
+
+    $countAll = count($missions);
+    $countFinished = 0;
+
+    if (count($missions) > 0) {
+      foreach ($missions as $mission) {
+        $startAt = $mission->getStartAt();
+        $endAt = $mission->getEndAt();
+
+        $duration = $endAt->diff($startAt)->days;
+        if ($duration <= 0) {
+          $countFinished += 1;
+        }
+      }
+    }
+
+    $data = ['countAll' => $countAll, 'countFinished' => $countFinished];
+    return $this->json($data);
+  }
+
+  //************************************************************************************
+
   #[Route('/api/current_missions', methods: ['GET'])]
   public function getCurrentMissions(): JsonResponse
   {

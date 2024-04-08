@@ -79,4 +79,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     return $qb->getQuery()->getResult();
   }
+
+  public function countActiveUsers(): mixed
+  {
+    $qb = $this->createQueryBuilder('u')->select('COUNT(u)');
+
+    $qb = $qb->where($qb->expr()->andX(
+      $qb->expr()->eq('u.isActive', ':isActive'),
+      $qb->expr()->eq('u.isDeleted', ':isDeleted')
+    ))
+    ->setParameter('isActive', true)
+    ->setParameter('isDeleted', false);
+
+    $query = $qb->getQuery();
+
+    return $query->getSingleScalarResult();
+  }
+
+  public function countAllUsers(): mixed
+  {
+    $qb = $this->createQueryBuilder('u')->select('COUNT(u)');
+    $qb->where('u.isDeleted = :isDeleted')->setParameter('isDeleted', false);
+
+    $query = $qb->getQuery();
+
+    return $query->getSingleScalarResult();
+  }
 }

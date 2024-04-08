@@ -79,4 +79,17 @@ class RefuelingRepository extends ServiceEntityRepository
       ->getQuery()
       ->getResult();
   }
+
+  public function findStatsByDate(mixed $year, mixed $month): mixed
+  {
+    $qb = $this->createQueryBuilder('r')->select('SUM(r.quantity)');
+    $qb->where($qb->expr()->andX(
+      $qb->expr()->eq('SUBSTRING(r.createdAt, 1, 4)', ':year'),
+      $qb->expr()->eq('SUBSTRING(r.createdAt, 6, 2)', ':month')
+    ))
+    ->setParameter('year', $year)
+    ->setParameter('month', $month);
+
+    return $qb->getQuery()->getSingleScalarResult() ?? 0;
+  }
 }

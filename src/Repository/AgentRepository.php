@@ -76,4 +76,14 @@ class AgentRepository extends ServiceEntityRepository
       ->getQuery()
       ->getResult();
   }
+
+  public function countAgents(): mixed
+  {
+    $qb = $this->createQueryBuilder('a')->select('COUNT(a)');
+
+    $qb->where($qb->expr()->notIn('a.state', ['dead', 'retired']));
+    $query = $qb->getQuery();
+
+    return $query->getSingleScalarResult();
+  }
 }

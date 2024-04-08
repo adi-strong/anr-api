@@ -13,6 +13,19 @@ final class UserControllerAction extends AbstractController
 {
   public function __construct(private readonly UserRepository $repository) { }
 
+  #[Route('/api/get_count_users', methods: ['GET'])]
+  public function getCountUsers(): JsonResponse
+  {
+    $countAll = $this->repository->countAllUsers();
+    $countActives = $this->repository->countActiveUsers();
+
+    $data = ['countAll' => $countAll, 'countActives' => $countActives];
+
+    return $this->json($data);
+  }
+
+  //************************************************************************************
+
   #[Route('/api/search_users/{keyword}', methods: ['GET'])]
   public function getSearchUser($keyword): JsonResponse
   {

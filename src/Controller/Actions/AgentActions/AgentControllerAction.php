@@ -13,6 +13,19 @@ final class AgentControllerAction extends AbstractController
 {
   public function __construct(private readonly AgentRepository $repository) { }
 
+  #[Route('/api/get_count_agents', methods: ['GET'])]
+  public function getCountAgents(): JsonResponse
+  {
+    $countActives = $this->repository->count(['state' => 'active']);
+    $countAll = $this->repository->countAgents();
+
+    $data = ['countAll' => $countAll, 'countActives' => $countActives];
+
+    return $this->json($data);
+  }
+
+  //************************************************************************************
+
   #[Route('/api/search_agents/{keyword}', methods: ['GET'])]
   public function getSearchAgent($keyword): JsonResponse
   {
@@ -72,6 +85,8 @@ final class AgentControllerAction extends AbstractController
 
     return $this->json($data);
   }
+
+  //************************************************************************************
 
   #[Route('/api/active_agents', methods: ['GET'])]
   public function getActiveAgents(): JsonResponse

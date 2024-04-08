@@ -81,7 +81,7 @@ class ExpenseRepository extends ServiceEntityRepository
    * @param string $date
    * @return Expense[]
    */
-  public function findRportByDate(string $date): array
+  public function findReportByDate(string $date): array
   {
     return $this->createQueryBuilder('e')
       ->andWhere('SUBSTRING(e.releasedAt, 1, 10) = :date')
@@ -89,5 +89,70 @@ class ExpenseRepository extends ServiceEntityRepository
       ->orderBy('e.releasedAt', 'DESC')
       ->getQuery()
       ->getResult();
+  }
+
+  public function findThisYearExpensesSum(): mixed
+  {
+    $year = date('Y');
+
+    $qb = $this->createQueryBuilder('e')->select('SUM(e.total)');
+    $qb->where($qb->expr()->eq(
+      'SUBSTRING(e.releasedAt, 1, 4)', ':year'
+    ))
+    ->setParameter('year', $year);
+
+    return $qb->getQuery()->getSingleScalarResult();
+  }
+
+  /**
+   * @return Expense[]
+   */
+  public function findThisYearExpenses(): array
+  {
+    $year = date('Y');
+
+    $qb = $this->createQueryBuilder('e');
+    $qb->where($qb->expr()->eq(
+      'SUBSTRING(e.releasedAt, 1, 4)', ':year'
+    ))
+    ->setParameter('year', $year);
+
+    return $qb->getQuery()->getResult();
+  }
+
+  /**
+   * @param mixed $year
+   * @param mixed $month
+   * @return Expense[]
+   */
+  public function findStatsByDate(mixed $year, mixed $month): array
+  {
+    $qb = $this->createQueryBuilder('r');
+    $qb->where($qb->expr()->andX(
+      $qb->expr()->eq('SUBSTRING(r.releasedAt, 1, 4)', ':year'),
+      $qb->expr()->eq('SUBSTRING(r.releasedAt, 6, 2)', ':month')
+    ))
+    ->setParameter('year', $year)
+    ->setParameter('month', $month);
+
+    return $qb->getQuery()->getResult();
+  }
+
+  /**
+   * @param string $month
+   * @return Expense[]
+   */
+  public function findExpenseByMonth(string $month): array
+  {
+    $year = date('Y');
+    $qb = $this->createQueryBuilder('e');
+    $qb->where($qb->expr()->andX(
+      $qb->expr()->eq('SUBSTRING(e.releasedAt, 1, 4)', ':year'),
+      $qb->expr()->eq('SUBSTRING(e.releasedAt, 6, 2)', ':month'),
+    ))
+    ->setParameter('year', $year)
+    ->setParameter('month', $month);
+
+    return $qb->getQuery()->getResult();
   }
 }

@@ -56,4 +56,33 @@ class MissionRepository extends ServiceEntityRepository
       ->getQuery()
       ->getResult();
   }
+
+  /**
+   * @return Mission[]
+   */
+  public function findThisYearMissions(): array
+  {
+    $year = date('Y');
+
+    $qb = $this->createQueryBuilder('m');
+    $qb->where($qb->expr()->eq(
+      'SUBSTRING(m.createdAt, 1, 4)', ':year'
+    ))
+    ->setParameter('year', $year);
+
+    return $qb->getQuery()->getResult();
+  }
+
+  public function findStatsByDate(mixed $year, mixed $month): mixed
+  {
+    $qb = $this->createQueryBuilder('r')->select('COUNT(r)');
+    $qb->where($qb->expr()->andX(
+      $qb->expr()->eq('SUBSTRING(r.createdAt, 1, 4)', ':year'),
+      $qb->expr()->eq('SUBSTRING(r.createdAt, 6, 2)', ':month')
+    ))
+      ->setParameter('year', $year)
+      ->setParameter('month', $month);
+
+    return $qb->getQuery()->getSingleScalarResult() ?? 0;
+  }
 }

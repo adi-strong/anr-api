@@ -34,11 +34,11 @@ final class SearchExpenseAction extends AbstractController
     }
     elseif (isset($startAt) && !isset($endAt)) {
       $startAt = $startAt->format('Y-m-d');
-      $reports = $this->repository->findRportByDate($startAt);
+      $reports = $this->repository->findReportByDate($startAt);
     }
     elseif (isset($endAt) && !isset($startAt)) {
       $endAt = $endAt->format('Y-m-d');
-      $reports = $this->repository->findRportByDate($endAt);
+      $reports = $this->repository->findReportByDate($endAt);
     }
 
     $total1 = 0;
