@@ -15,6 +15,7 @@ use App\Entity\Fuel;
 use App\Entity\FuelSite;
 use App\Entity\Grade;
 use App\Entity\Job;
+use App\Entity\News;
 use App\Entity\Property;
 use App\Entity\PropertyType;
 use App\Entity\Province;
@@ -132,6 +133,12 @@ class ApplyDQLToCollections implements QueryCollectionExtensionInterface, QueryI
     }
 
     if ($resourceClass === VehicleType::class && $user instanceof User) {
+      $queryBuilder
+        ->andWhere("$alias.isDeleted = :isDeleted")
+        ->setParameter('isDeleted', false);
+    }
+
+    if ($resourceClass === News::class && $user instanceof User) {
       $queryBuilder
         ->andWhere("$alias.isDeleted = :isDeleted")
         ->setParameter('isDeleted', false);

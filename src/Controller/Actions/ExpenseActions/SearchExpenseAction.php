@@ -17,7 +17,7 @@ final class SearchExpenseAction extends AbstractController
     private readonly CurrencyRepository $currencyRepository
   ) { }
 
-  public function __invoke(SearchExpenseResource$resource): JsonResponse
+  public function __invoke(SearchExpenseResource $resource): JsonResponse
   {
     $data = [];
     $startAt = $resource->startAt;

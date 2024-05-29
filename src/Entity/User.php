@@ -54,6 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
       'exp:read',
       'agent:read',
       'mission:read',
+      'news:read',
     ])]
     private ?int $id = null;
 
@@ -71,6 +72,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
       'user:read',
       'agent:read',
       'mission:read',
+      'news:read',
     ])]
     private ?string $username = null;
 
@@ -111,13 +113,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
       'exp:read',
       'agent:read',
       'mission:read',
+      'news:read',
     ])]
     private ?string $fullName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Email(message: 'Adresse Email invalide.')]
     #[Assert\Length(max: 255, maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.')]
-    #[Groups(['user:read',])]
+    #[Groups(['user:read', 'news:read',])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -125,7 +128,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotNull(message: 'Ce champ doit être renseigné.')]
     #[Assert\Regex('#^\+?\d(?:[\s.-]?\d{2,3}){3,}$#', message: 'N° de Téléphone invalide.')]
     #[Assert\Length(max: 255, maxMessage: 'Ce champ ne peut dépasser {{ limit }} caractères.')]
-    #[Groups(['user:read',])]
+    #[Groups(['user:read', 'news:read',])]
     private ?string $phone = null;
 
     #[ORM\Column(nullable: true)]
@@ -148,8 +151,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $missions;
 
     #[ORM\OneToOne(inversedBy: 'account')]
-    #[Groups(['user:read',])]
+    #[Groups(['user:read', 'news:read',])]
     private ?Agent $agentAccount = null;
+
+    #[ORM\OneToMany(targetEntity: News::class, mappedBy: 'user')]
+    private Collection $news;
 
     public function __construct()
     {
@@ -157,6 +163,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->expenses = new ArrayCollection();
         $this->agents = new ArrayCollection();
         $this->missions = new ArrayCollection();
+        $this->news = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -422,6 +429,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAgentAccount(?Agent $agentAccount): static
     {
         $this->agentAccount = $agentAccount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, News>
+     */
+    public function getNews(): Collection
+    {
+        return $this->news;
+    }
+
+    public function addNews(News $news): static
+    {
+        if (!$this->news->contains($news)) {
+            $this->news->add($news);
+            $news->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNews(News $news): static
+    {
+        if ($this->news->removeElement($news)) {
+            // set the owning side to null (unless already changed)
+            if ($news->getUser() === $this) {
+                $news->setUser(null);
+            }
+        }
 
         return $this;
     }

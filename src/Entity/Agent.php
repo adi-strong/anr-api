@@ -68,6 +68,7 @@ class Agent
       'society:read',
       'user:read',
       'med:read',
+      'news:read',
     ])]
     private ?int $id = null;
 
@@ -209,6 +210,7 @@ class Agent
       'p_ass:read',
       'society:read',
       'user:read',
+      'news:read',
     ])]
     private ?string $pseudo = null;
 

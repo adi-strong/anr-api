@@ -11,6 +11,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model;
 use App\Controller\Actions\MediaObjectActions\CreateImageObjectAction;
 use App\Repository\DocObjectRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -71,6 +73,7 @@ class ImageObject
     'user:read',
     'serv:read',
     'grade:read',
+    'news:read',
   ])]
   public ?string $contentUrl = null;
 
@@ -86,6 +89,14 @@ class ImageObject
 
   #[ORM\OneToOne(mappedBy: 'imageObject')]
   private ?Property $property = null;
+
+  #[ORM\ManyToMany(targetEntity: News::class, mappedBy: 'images')]
+  private Collection $news;
+
+  public function __construct()
+  {
+      $this->news = new ArrayCollection();
+  }
 
   public function getId(): ?int
   {
@@ -132,6 +143,33 @@ class ImageObject
       }
 
       $this->property = $property;
+
+      return $this;
+  }
+
+  /**
+   * @return Collection<int, News>
+   */
+  public function getNews(): Collection
+  {
+      return $this->news;
+  }
+
+  public function addNews(News $news): static
+  {
+      if (!$this->news->contains($news)) {
+          $this->news->add($news);
+          $news->addImage($this);
+      }
+
+      return $this;
+  }
+
+  public function removeNews(News $news): static
+  {
+      if ($this->news->removeElement($news)) {
+          $news->removeImage($this);
+      }
 
       return $this;
   }

@@ -21,6 +21,7 @@ trait ReleasedAtTrait
     'society:read',
     'society_rec:read',
     'med:read',
+    'news:read',
   ])]
   private ?\DateTimeInterface $releasedAt = null;
 
