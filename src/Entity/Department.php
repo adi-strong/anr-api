@@ -50,6 +50,7 @@ class Department
       'vehicle:read',
       'v_ass:read',
       'user:read',
+      'news:read',
     ])]
     private ?int $id = null;
 
@@ -72,6 +73,7 @@ class Department
       'vehicle:read',
       'v_ass:read',
       'user:read',
+      'news:read',
     ])]
     private ?string $name = null;
 
@@ -123,6 +125,9 @@ class Department
     #[ORM\OneToMany(targetEntity: Assignment::class, mappedBy: 'destination')]
     private Collection $assignmentDestinations;
 
+    #[ORM\OneToMany(targetEntity: News::class, mappedBy: 'department')]
+    private Collection $news;
+
     public function __construct()
     {
         $this->departments = new ArrayCollection();
@@ -131,6 +136,7 @@ class Department
         $this->agents = new ArrayCollection();
         $this->assignments = new ArrayCollection();
         $this->assignmentDestinations = new ArrayCollection();
+        $this->news = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -451,6 +457,36 @@ class Department
           // set the owning side to null (unless already changed)
           if ($assignmentDestination->getDestination() === $this) {
               $assignmentDestination->setDestination(null);
+          }
+      }
+
+      return $this;
+  }
+
+  /**
+   * @return Collection<int, News>
+   */
+  public function getNews(): Collection
+  {
+      return $this->news;
+  }
+
+  public function addNews(News $news): static
+  {
+      if (!$this->news->contains($news)) {
+          $this->news->add($news);
+          $news->setDepartment($this);
+      }
+
+      return $this;
+  }
+
+  public function removeNews(News $news): static
+  {
+      if ($this->news->removeElement($news)) {
+          // set the owning side to null (unless already changed)
+          if ($news->getDepartment() === $this) {
+              $news->setDepartment(null);
           }
       }
 

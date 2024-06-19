@@ -33,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ),
   ],
   normalizationContext: ['groups' => 'news:read'],
+  # mercure: true,
   order: ['releasedAt' => 'desc'],
   forceEager: false
 )]
@@ -41,8 +42,6 @@ class News
 {
   use ReleasedAtTrait, IsDeletedTrait;
   
-  #[Assert\NotBlank(message: 'Pictures are required')]
-  #[Assert\NotNull(message: 'Pictures are required')]
   public ?array $pictures = [];
   
     #[ORM\Id]
@@ -111,11 +110,16 @@ class News
     private ?string $address = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Choice(['none', 'c1', 'c2', 'c3'], message: 'Classification invalide.')]
     #[Groups([
       'news:read',
     ])]
     private ?string $sort = 'c2';
+
+    #[ORM\ManyToOne(inversedBy: 'news')]
+    #[Groups([
+      'news:read',
+    ])]
+    private ?Department $department = null;
 
     public function __construct()
     {
@@ -243,6 +247,18 @@ class News
     public function setSort(?string $sort): static
     {
         $this->sort = $sort;
+
+        return $this;
+    }
+
+    public function getDepartment(): ?Department
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(?Department $department): static
+    {
+        $this->department = $department;
 
         return $this;
     }

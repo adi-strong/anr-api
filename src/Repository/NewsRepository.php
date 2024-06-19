@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Department;
 use App\Entity\News;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -73,6 +74,20 @@ class NewsRepository extends ServiceEntityRepository
       ->setParameter('startAt', $startAt)
       ->setParameter('endAt', $endAt)
       ->orderBy('n.releasedAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+  }
+  
+  /**
+   * @param Department $department
+   * @return News[]
+   */
+  public function findNewsByDepartment(Department $department): array
+  {
+    return $this->createQueryBuilder('n')
+      ->join('n.department', 'd')
+      ->where('d.id = :department')
+      ->setParameter('department', $department->getId())
       ->getQuery()
       ->getResult();
   }
