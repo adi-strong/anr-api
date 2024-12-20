@@ -1,4 +1,11 @@
 security:
+    role_hierarchy:
+        ROLE_100_DA: ROLE_USER
+        ROLE_DSI: ROLE_100_DA
+        ROLE_AGA: ROLE_DSI
+        ROLE_AG: ROLE_AGA
+        ROLE_SUPER_ADMIN: [ ROLE_AG, ROLE_ALLOWED_TO_SWITCH ]
+
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
@@ -39,6 +46,103 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+    - { path: ^/api/news, roles: ROLE_USER, methods: POST }
+    - { path: ^/api/news, roles: ROLE_USER, methods: PATCH }
+    - { path: ^/api/news, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/fuels, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/fuels, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/fuels, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/fuel_supplies, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/fuel_supplies, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/refuelings, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/refuelings, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/vehicles, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/vehicles, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/vehicles, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/properties, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/properties, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/properties, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/search_recoveries_resources, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/search_recoveries_resources, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/society_recoveries, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/society_recoveries, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/search_recoveries_resources, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/search_expense_resources, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/search_expense_resources, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/expenses, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/expenses, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/expenses, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/expenses, roles: ROLE_AG, methods: DELETE }
+    - { path: ^/api/expense_types, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/expense_types, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/expense_types, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/expense_types, roles: ROLE_AG, methods: DELETE }
+    - { path: ^/api/active_agents, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/inactive_agents, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/sick_agents, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/leave_agents, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/dead_agents, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/unavailable_agents, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/retired_agents, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/soon_retired_agents, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/current_missions, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/missions_near_expirations, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/current_assignments, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/assignments_near_expirations, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/agents, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/users/\d+$, roles: ROLE_USER, methods: PATCH }
+    - { path: ^/api/users/\d+$, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/users, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/users, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/assignments, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/assignments, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/assignments, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/assignments, roles: ROLE_AG, methods: DELETE }
+    - { path: ^/api/salaries, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/salaries, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/salaries, roles: ROLE_AG, methods: DELETE }
+    - { path: ^/api/salaries, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/jobs, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/jobs, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/jobs, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/jobs, roles: ROLE_AG, methods: DELETE }
+    - { path: ^/api/currencies, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/currencies, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/provinces, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/provinces, roles: ROLE_AG, methods: DELETE }
+    - { path: ^/api/provinces, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/provinces, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/search_provinces, roles: ROLE_USER, methods: PATCH }
+    - { path: ^/api/departments, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/departments, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/departments, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/departments, roles: ROLE_AG, methods: DELETE }
+    - { path: ^/api/folder_types, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/folder_types, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/folder_types, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/folder_types, roles: ROLE_AG, methods: DELETE }
+    - { path: ^/api/property_types, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/property_types, roles: ROLE_USER, methods: POST }
+    - { path: ^/api/property_types, roles: ROLE_USER, methods: PATCH }
+    - { path: ^/api/property_types, roles: ROLE_USER, methods: DELETE }
+    - { path: ^/api/property_types, roles: ROLE_AG, methods: DELETE }
+    - { path: ^/api/search_properties, roles: ROLE_USER, methods: DELETE }
+    - { path: ^/api/society_types, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/society_types, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/society_types, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/society_types, roles: ROLE_AG, methods: DELETE }
+    - { path: ^/api/vehicle_types, roles: ROLE_USER, methods: GET }
+    - { path: ^/api/vehicle_types, roles: ROLE_AG, methods: POST }
+    - { path: ^/api/vehicle_types, roles: ROLE_AG, methods: PATCH }
+    - { path: ^/api/vehicle_types, roles: ROLE_AG, methods: DELETE }
+    
+    - { path: ^/api/get_count_agents, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/get_count_users, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/get_count_missions, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/get_this_year_expenses_sum, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/get_synthesis_stats, roles: ROLE_AG, methods: GET }
+    - { path: ^/api/get_this_month_finances_stats, roles: ROLE_AG, methods: GET }
+
     # - { path: ^/admin, roles: ROLE_ADMIN }
     # - { path: ^/profile, roles: ROLE_USER }
 
